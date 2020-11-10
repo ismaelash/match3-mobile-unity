@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using IsmaelNascimento.Screens;
+using System.Collections;
 using UnityEngine;
 using Utils;
 
@@ -18,13 +19,6 @@ namespace IsmaelNascimento.Controllers
 
         #region VARIABLES
 
-        [Header("Camera Settings")]
-        [SerializeField] private float cameraWidth = 7;
-        [SerializeField] private bool autoCameraWidth;
-        [SerializeField] private SpriteRenderer background;
-        [SerializeField] private GameObject gemMenu;
-
-
         [Header("Game Settings")]
         [SerializeField] private GameData gameData;
         [SerializeField] [Tooltip("Attempts matches moves")] private int attempMatchesLimit = 10;
@@ -32,8 +26,10 @@ namespace IsmaelNascimento.Controllers
         [SerializeField] private float swapSpeed;
         [SerializeField] private float fallSpeed;
         [SerializeField] private bool preventInitialMatches;
+        [SerializeField] private GameplayScreen gameplayScreen;
 
         // Privates
+        private float cameraWidth = 7;
         private Coroutine changeGem;
         private Coroutine gameOver;
         private int currentGoalScore;
@@ -49,7 +45,7 @@ namespace IsmaelNascimento.Controllers
             set
             {
                 score = value;
-                UIController.Instance.UpdateScore();
+                gameplayScreen.UpdateScore();
             }
         }
 
@@ -59,7 +55,7 @@ namespace IsmaelNascimento.Controllers
             set
             {
                 currentGoalScore = value;
-                UIController.Instance.UpdateScore();
+                gameplayScreen.UpdateScore();
             }
         }
 
@@ -69,7 +65,7 @@ namespace IsmaelNascimento.Controllers
             set
             {
                 timeLeft = Mathf.Max(value, 0);
-                UIController.Instance.UpdateTimeLeft(timeLeft);
+                gameplayScreen.UpdateTimeLeft(timeLeft);
             }
         }
 
@@ -79,6 +75,7 @@ namespace IsmaelNascimento.Controllers
             set
             {
                 attempMatchesCount = value;
+                gameplayScreen.UpdateMovesCount();
             }
         }
 
@@ -86,6 +83,7 @@ namespace IsmaelNascimento.Controllers
         public float FallSpeed { get => fallSpeed; set => fallSpeed = value; }
         public bool PreventInitialMatches { get => preventInitialMatches; set => preventInitialMatches = value; }
         public GameData GameData { get => gameData; set => gameData = value; }
+        public int AttempMatchesLimit { get => attempMatchesLimit; }
 
         #endregion
 
@@ -93,22 +91,8 @@ namespace IsmaelNascimento.Controllers
 
         private void Start()
         {
-            if (autoCameraWidth)
-            {
-                cameraWidth = BoardController.Instance.Width + (Camera.main.aspect * 2);
-            }
-
+            cameraWidth = BoardController.Instance.Width + (Camera.main.aspect * 2);
             Miscellaneous.SetCameraOrthographicSizeByWidth(Camera.main, cameraWidth);
-            float backgroundWidth = background.sprite.bounds.size.x;
-            float backgroundHeight = background.sprite.bounds.size.y;
-
-            background.transform.localScale = Vector3.one *
-                Mathf.Max(
-                    cameraWidth / backgroundWidth,
-                    Camera.main.orthographicSize * 2 / backgroundHeight
-                );
-
-            gemMenu.transform.localScale = Vector3.one * 2 * (cameraWidth / 7f);
             UIController.Instance.ShowMainScreen();
         }
 
@@ -176,11 +160,12 @@ namespace IsmaelNascimento.Controllers
 
         private IEnumerator StartGame_Coroutine()
         {
+            AttempMatchesCount = 0;
             ScoreCurrent = 0;
             GoalScoreCurrent = 50;
             TimeLeft = timeTotalGameplay;
             BoardController.Instance.MatchCounter = 0;
-            UIController.Instance.ShowGameScreen();
+            gameplayScreen.Show();
             yield return new WaitForSeconds(1f);
             TouchController.Instance.IsDisabled = true;
             yield return new WaitForSeconds(BoardController.Instance.CreateBoard());
