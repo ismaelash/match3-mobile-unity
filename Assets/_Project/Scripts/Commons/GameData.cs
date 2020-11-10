@@ -34,7 +34,8 @@ public class AudioClipInfo {
 }
 
 [CreateAssetMenu(fileName = "GameData", menuName = "Match3/GameData", order = 1)]
-public class GameData : SingletonScriptableObject<GameData> {
+public class GameData : ScriptableObject 
+{
     
     [SerializeField]
     List<GemData> gems = new List<GemData>();
@@ -44,28 +45,28 @@ public class GameData : SingletonScriptableObject<GameData> {
     List<AudioClipInfo> audioClipInfos = new List<AudioClipInfo>();
     [SerializeField]
     string[] comboMessages;
-    public static int maxCombo {
-        get { return instance.comboMessages.Length; }
+    public int maxCombo {
+        get { return comboMessages.Length; }
     }
 
-    public static GemData GemOfType(GemType type) {
-        return instance.gems.Find(gem => gem.type == type);
+    public GemData GemOfType(GemType type) {
+        return gems.Find(gem => gem.type == type);
     }
 
-    public static GemData RandomGem() {
-        return Miscellaneous.Choose(instance.gems);
+    public GemData RandomGem() {
+        return Miscellaneous.Choose(gems);
     }
 
-    public static GameObject GetSpecialGem(string name) {
-        SpecialGemData sgd = instance.specialGems.Find(gem => gem.name == name);
+    public GameObject GetSpecialGem(string name) {
+        SpecialGemData sgd = specialGems.Find(gem => gem.name == name);
         if(sgd != null)
             return sgd.prefab;
 
         return null;
     }
 
-    public static AudioClip GetAudioClip(string name) {
-        AudioClipInfo audioClipInfo = instance.audioClipInfos.Find(
+    public AudioClip GetAudioClip(string name) {
+        AudioClipInfo audioClipInfo = audioClipInfos.Find(
             aci => aci.name == name
         );
 
@@ -75,7 +76,7 @@ public class GameData : SingletonScriptableObject<GameData> {
         return null;
     }
 
-    public static string GetComboMessage(int combo) {
-        return instance.comboMessages[combo];
+    public string GetComboMessage(int combo) {
+        return comboMessages[combo];
     }
 }

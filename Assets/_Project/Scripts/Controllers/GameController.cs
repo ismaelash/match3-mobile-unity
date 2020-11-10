@@ -4,7 +4,7 @@ using Utils;
 
 namespace IsmaelNascimento.Controllers
 {
-    public class GameController : SingletonMonoBehaviour<GameController>
+    public class GameController : Singleton<GameController>
     {
         #region ENUMS
 
@@ -27,6 +27,7 @@ namespace IsmaelNascimento.Controllers
 
         [Header("Game Settings")]
         [SerializeField] private GameData gameData;
+        [SerializeField] [Tooltip("Attempts matches moves")] private int attempMatchesLimit = 10;
         [SerializeField] [Tooltip("Seconds")] private int timeTotalGameplay = 120;
         [SerializeField] private float swapSpeed;
         [SerializeField] private float fallSpeed;
@@ -38,12 +39,13 @@ namespace IsmaelNascimento.Controllers
         private int currentGoalScore;
         private int score;
         private float timeLeft;
+        private int attempMatchesCount;
         private GameState state = GameState.None;
 
         // Properties
         public int ScoreCurrent
         {
-            get { return score; }
+            get => score;
             set
             {
                 score = value;
@@ -53,7 +55,7 @@ namespace IsmaelNascimento.Controllers
 
         public int GoalScoreCurrent
         {
-            get { return currentGoalScore; }
+            get => currentGoalScore;
             set
             {
                 currentGoalScore = value;
@@ -63,7 +65,7 @@ namespace IsmaelNascimento.Controllers
 
         public float TimeLeft
         {
-            get { return timeLeft; }
+            get => timeLeft;
             set
             {
                 timeLeft = Mathf.Max(value, 0);
@@ -71,9 +73,19 @@ namespace IsmaelNascimento.Controllers
             }
         }
 
+        public int AttempMatchesCount
+        {
+            get => attempMatchesCount;
+            set
+            {
+                attempMatchesCount = value;
+            }
+        }
+
         public float SwapSpeed { get => swapSpeed; set => swapSpeed = value; }
         public float FallSpeed { get => fallSpeed; set => fallSpeed = value; }
         public bool PreventInitialMatches { get => preventInitialMatches; set => preventInitialMatches = value; }
+        public GameData GameData { get => gameData; set => gameData = value; }
 
         #endregion
 
@@ -98,7 +110,6 @@ namespace IsmaelNascimento.Controllers
 
             gemMenu.transform.localScale = Vector3.one * 2 * (cameraWidth / 7f);
             UIController.Instance.ShowMainScreen();
-            SoundController.PlayMusic(GameData.GetAudioClip("bgm"), 1);
         }
 
         private void Update()

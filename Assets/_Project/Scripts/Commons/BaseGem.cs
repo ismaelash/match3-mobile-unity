@@ -1,4 +1,5 @@
-﻿using IsmaelNascimento.Controllers;
+﻿using IsmaelNascimento.Commons;
+using IsmaelNascimento.Controllers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -144,7 +145,7 @@ public class BaseGem : MonoBehaviour, ITouchable
 
             if(otherGem) {
                 BoardController.Instance.TryMatch(this, otherGem);
-                SoundController.PlaySfx(GameData.GetAudioClip("swap"));
+                SoundController.Instance.PlaySfx(GameController.Instance.GameData.GetAudioClip(Constants.swapSfxAudioclipName));
             }
 
             TouchUp();

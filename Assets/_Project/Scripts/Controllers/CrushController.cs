@@ -3,7 +3,7 @@ using Utils;
 
 namespace IsmaelNascimento.Controllers
 {
-    public class CrushController : SingletonMonoBehaviour<CrushController>
+    public class CrushController : Singleton<CrushController>
     {
         #region VARIABLES
 

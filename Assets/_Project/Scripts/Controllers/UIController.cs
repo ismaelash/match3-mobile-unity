@@ -2,10 +2,11 @@
 using TMPro;
 using UnityEngine;
 using System;
+using IsmaelNascimento.Commons;
 
 namespace IsmaelNascimento.Controllers
 {
-    public class UIController : SingletonMonoBehaviour<UIController>
+    public class UIController : Singleton<UIController>
     {
         #region VARIABLES
 
@@ -25,6 +26,7 @@ namespace IsmaelNascimento.Controllers
         {
             gameScreen.SetActive(false);
             mainScreen.SetActive(true);
+            SoundController.Instance.PlayMusic(GameController.Instance.GameData.GetAudioClip(Constants.backgroundMusicAudioclipName));
         }
 
         public void ShowGameScreen()
@@ -32,6 +34,8 @@ namespace IsmaelNascimento.Controllers
             UpdateTimeLeft(GameController.Instance.TimeLeft);
             mainScreen.SetActive(false);
             gameScreen.SetActive(true);
+            SoundController.Instance.StopMusic();
+
         }
 
         public void UpdateScore()

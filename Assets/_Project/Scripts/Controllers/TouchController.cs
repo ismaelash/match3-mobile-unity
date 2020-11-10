@@ -3,7 +3,7 @@ using Utils;
 
 namespace IsmaelNascimento.Controllers
 {
-	public class TouchController : SingletonMonoBehaviour<TouchController>
+	public class TouchController : Singleton<TouchController>
 	{
 		#region VARIABLES
 

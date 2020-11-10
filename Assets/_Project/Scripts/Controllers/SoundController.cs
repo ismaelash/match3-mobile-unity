@@ -1,109 +1,40 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Utils;
 
-public class SoundController : SingletonMonoBehaviour<SoundController> {
+namespace IsmaelNascimento.Controllers
+{
+    public class SoundController : Singleton<SoundController>
+    {
+        #region VARIABLES
 
-    AudioSource musicSource,
-    sfxSource;
+        [SerializeField] private AudioSource musicAudioSource;
+        [SerializeField] private AudioSource sfxAudioSource;
 
-    public static bool soundMuted;
+        #endregion
 
-    public override void Awake() {
-        base.Awake();
+        #region PUBLIC_METHODS
 
-        musicSource = gameObject.AddComponent<AudioSource>();
-        musicSource.loop = true;
-        sfxSource = gameObject.AddComponent<AudioSource>();
-    }
-
-    public static void PlayMusic(AudioClip clip, float volume) {
-        if (Instance.musicSource.clip == clip)
-            return;
-        //instance.musicSource.clip = clip;
-        //instance.musicSource.volume = volume;
-        //instance.musicSource.Play();
-        Instance.StartCoroutine(Instance.PlayMusicFade(clip, volume));
-        Instance.musicSource.mute = soundMuted;
-    }
-
-    IEnumerator PlayMusicFade(AudioClip clip, float volume) {
-        float t = 1, lastVolume = musicSource.volume;
-
-        if (musicSource.isPlaying) {
-            while (t > 0) {
-                musicSource.volume = Mathf.Lerp(0, lastVolume, t);
-                t -= 0.1f;
-                yield return new WaitForSecondsRealtime(0.1f);
-            }
-
-            musicSource.Stop();
+        public void PlayMusic(AudioClip clip, float volume = 1, bool loop = true)
+        {
+            musicAudioSource.clip = clip;
+            musicAudioSource.volume = volume;
+            musicAudioSource.loop = loop;
+            musicAudioSource.Play();
         }
 
-        musicSource.clip = clip;
-        musicSource.volume = 0;
-        musicSource.Play();
-        t = 0;
-
-        while (t < volume) {
-            musicSource.volume = Mathf.Lerp(0, volume, t);
-            t += 0.1f;
-            yield return new WaitForSecondsRealtime(0.1f);
+        public void StopMusic()
+        {
+            musicAudioSource.Stop();
         }
 
-        musicSource.volume = volume;
-    }
-
-    public static void PlaySfx(AudioClip clip, float volume = 1f) {
-        Instance.sfxSource.mute = soundMuted;
-        Instance.sfxSource.clip = clip;
-        Instance.sfxSource.volume = volume;
-        Instance.sfxSource.Play();
-    }
-
-    public void PlaySfxNonStatic(AudioClip clip) {
-        Instance.sfxSource.mute = soundMuted;
-        Instance.sfxSource.clip = clip;
-        Instance.sfxSource.volume = 1f;
-        Instance.sfxSource.Play();
-    }
-
-    public static AudioSource PlaySfxInstance(AudioClip clip, float volume = 1f) {
-        AudioSource sfxSource = Instantiate(
-            Resources.Load<GameObject>("Prefabs/sfxSourcePrefab")
-        ).GetComponent<AudioSource>();
-        
-        sfxSource.mute = soundMuted;
-        sfxSource.clip = clip;
-        sfxSource.volume = volume;
-        sfxSource.Play();
-        return sfxSource;
-    }
-
-    public static void StopMusic() {
-        Instance.musicSource.Stop();
-    }
-
-    public static void FadeOut(AudioSource asrc) {
-        Instance.StartCoroutine(Instance.FadeOutEnum(asrc));
-    }
-
-    IEnumerator FadeOutEnum(AudioSource asrc) {
-        float t = 1, lastVolume = asrc.volume;
-        if (asrc.isPlaying) {
-            while (t > 0) {
-                asrc.volume = Mathf.Lerp(0, lastVolume, t);
-                t -= 0.1f;
-                yield return new WaitForSecondsRealtime(0.1f);
-            }
-
-            asrc.Stop();
+        public void PlaySfx(AudioClip clip, float volume = 1f, bool loop = false)
+        {
+            sfxAudioSource.clip = clip;
+            sfxAudioSource.volume = volume;
+            sfxAudioSource.loop = loop;
+            sfxAudioSource.Play();
         }
-    }
 
-    public static void Mute(bool mute = true) {
-        Instance.musicSource.mute = mute;
-        Instance.sfxSource.mute = mute;
+        #endregion
     }
 }

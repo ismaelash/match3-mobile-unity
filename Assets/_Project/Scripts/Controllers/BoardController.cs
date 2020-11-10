@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IsmaelNascimento.Commons;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,7 @@ using Utils;
 
 namespace IsmaelNascimento.Controllers
 {
-    public class BoardController : SingletonMonoBehaviour<BoardController>
+    public class BoardController : Singleton<BoardController>
     {
         #region VARIABLES
 
@@ -32,7 +33,7 @@ namespace IsmaelNascimento.Controllers
         public int MatchCounter
         {
             get => matchCounter;
-            set => matchCounter = Mathf.Min(value, GameData.maxCombo);
+            set => matchCounter = Mathf.Min(value, GameController.Instance.GameData.maxCombo);
         }
 
         #endregion
@@ -64,7 +65,7 @@ namespace IsmaelNascimento.Controllers
                     {
                         while (gem.GetMatch().isValid)
                         {
-                            gem.SetType(GameData.RandomGem());
+                            gem.SetType(GameController.Instance.GameData.RandomGem());
                         }
                     }
 
@@ -282,7 +283,7 @@ namespace IsmaelNascimento.Controllers
 
         private BaseGem CreateRandomGem(int x, int y, Vector3 worldPosition, float delay, out float creatingDuration)
         {
-            return CreateGem(x, y, GameData.RandomGem(), worldPosition, delay, out creatingDuration);
+            return CreateGem(x, y, GameController.Instance.GameData.RandomGem(), worldPosition, delay, out creatingDuration);
         }
 
         private BaseGem CreateRandomGem(int x, int y, Vector3 worldPosition,float delay)
@@ -329,6 +330,7 @@ namespace IsmaelNascimento.Controllers
 
         private IEnumerator TryMatch_Coroutine(BaseGem from, BaseGem to)
         {
+            GameController.Instance.AttempMatchesCount++;
             EnableUpdateBoard(true);
             yield return StartCoroutine(SwapGems_Coroutine(from, to));
 
@@ -528,7 +530,7 @@ namespace IsmaelNascimento.Controllers
                     BaseGem newGem = CreateGem(
                         matchInfo.pivot.position.x,
                         matchInfo.pivot.position.y,
-                        GameData.GemOfType(GemType.Special),
+                        GameController.Instance.GameData.GemOfType(GemType.Special),
                         GetWorldPosition(matchInfo.pivot.position + Vector2Int.up),
                         0, out newGemDuration
                     );
@@ -552,7 +554,7 @@ namespace IsmaelNascimento.Controllers
             }
 
             GameController.Instance.ScoreCurrent += score * MatchCounter;
-            SoundController.PlaySfx(GameData.GetAudioClip("match"));
+            SoundController.Instance.PlaySfx(GameController.Instance.GameData.GetAudioClip(Constants.matchSfxAudioclipName));
 
             yield return new WaitForSeconds(maxDuration / 2);
         }
