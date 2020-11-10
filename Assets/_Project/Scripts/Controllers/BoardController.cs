@@ -266,7 +266,7 @@ namespace IsmaelNascimento.Controllers
         private void EnableUpdateBoard(bool enable)
         {
             IsUpdatingBoard = enable;
-            HintController.paused = enable;
+            CrushController.Instance.Paused = enable;
             TouchController.Instance.IsDisabled = enable;
         }
 
@@ -396,8 +396,8 @@ namespace IsmaelNascimento.Controllers
                 yield break;
             }
 
-            HintController.FindHints();
-            if (!HintController.hasHints)
+            CrushController.Instance.FindCrushes();
+            if (!CrushController.Instance.HasCrushes)
             {
                 yield return StartCoroutine(ShuffleBoard_Coroutine());
                 UpdateBoard();

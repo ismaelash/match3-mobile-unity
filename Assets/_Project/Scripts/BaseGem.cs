@@ -107,8 +107,8 @@ public class BaseGem : MonoBehaviour, ITouchable
         return animator.GetCurrentStateDuration() + delay;
     }
 
-    public void Hint(bool start = true) {
-        animator.SetBool("hinting", start);
+    public void Crush(bool start = true) {
+        animator.SetBool("crushing", start);
     }
 
     IEnumerator IEAnimationDelay(float delay) {
