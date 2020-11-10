@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using Utilities;
+using Utils;
 
 namespace IsmaelNascimento.Controllers
 {
@@ -102,13 +102,13 @@ namespace IsmaelNascimento.Controllers
 
 #endif
 
-		public static void ClearElementClicked(ITouchable other)
-		{
-			if (Instance.elementClicked == other)
-			{
-				ClearElementClicked();
-			}
-		}
+		//public static void ClearElementClicked(ITouchable other)
+		//{
+		//	if (Instance.elementClicked == other)
+		//	{
+		//		ClearElementClicked();
+		//	}
+		//}
 
 		public static void ClearElementClicked()
 		{

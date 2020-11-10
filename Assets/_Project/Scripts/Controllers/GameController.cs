@@ -1,194 +1,195 @@
-﻿using IsmaelNascimento.Controllers;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using UnityEngine;
-using Utilities;
+using Utils;
 
-public enum GameState {
-    Menu,
-    Playing
-}
+namespace IsmaelNascimento.Controllers
+{
+    public class GameController : SingletonMonoBehaviour<GameController>
+    {
+        #region ENUMS
 
-public class GameController : SingletonMonoBehaviour<GameController> {
-
-    Coroutine changeGem;
-    Coroutine gameOver;
-
-    [Header("Camera Settings")]
-    public float cameraWidth = 7;
-    public bool autoCameraWidth;
-    public GameObject bg;
-    public GameObject gemMenu;
-    BaseGem gem;
-
-
-    [Header("Game Settings")]
-    public float swapSpeed;
-    public float fallSpeed;
-    public bool preventInitialMatches;
-
-    [Header("Score Data")]
-
-    [SerializeField]
-    int _score;
-    public static int score {
-        get { return Instance._score; }
-        set {
-            UIController.UpdateComboScore(
-                value - Instance._score, BoardController.matchCounter
-            );
-            Instance._score = value;
-            UIController.UpdateScore(Instance._score);
-
-            if(value > highscore)
-                highscore = value;
+        public enum GameState
+        {
+            None,
+            Gameplay
         }
-    }
 
-    public static int highscore {
-        get { return PlayerPrefs.GetInt("match3-highscore", 0); }
-        set {
-            PlayerPrefs.SetInt("match3-highscore", value);
-            UIController.UpdateHighScore(value);
-        }
-    }
+        #endregion
 
-    [SerializeField]
-    int _currentGoalScore;
+        #region VARIABLES
 
-    public static int currentGoalScore {
-        get { return Instance._currentGoalScore; }
-        set {
-            Instance._currentGoalScore = value;
-            UIController.UpdateGoalScore(Instance._currentGoalScore);
-        }
-    }
+        [Header("Camera Settings")]
+        [SerializeField] private float cameraWidth = 7;
+        [SerializeField] private bool autoCameraWidth;
+        [SerializeField] private SpriteRenderer background;
+        [SerializeField] private GameObject gemMenu;
 
-    [SerializeField]
-    float _timeLeft;
-    public static float timeLeft {
-        get { return Instance._timeLeft; }
-        set {
-            Instance._timeLeft = Mathf.Max(value, 0);
-            UIController.UpdateTimeLeft(Instance._timeLeft);
-        }
-    }
 
-    public static GameState state = GameState.Menu;
+        [Header("Game Settings")]
+        [SerializeField] private GameData gameData;
+        [SerializeField] [Tooltip("Seconds")] private int timeTotalGameplay = 120;
+        public float swapSpeed;
+        public float fallSpeed;
+        public bool preventInitialMatches;
 
-    [SerializeField]
-    GameData gameData;
+        private Coroutine changeGem;
+        private Coroutine gameOver;
+        private int currentGoalScore;
+        private int score;
+        private float timeLeft;
+        private GameState state = GameState.None;
 
-    void Start() {
-        if(autoCameraWidth)
-            cameraWidth = BoardController.width + (Camera.main.aspect * 2);
-        
-        Miscellaneous.SetCameraOrthographicSizeByWidth(Camera.main, cameraWidth);
-        float bgWidth = bg.GetComponent<SpriteRenderer>().sprite.bounds.size.x;
-        float bgHeight = bg.GetComponent<SpriteRenderer>().sprite.bounds.size.y;
-
-        bg.transform.localScale = Vector3.one * (
-            Mathf.Max(
-                cameraWidth / bgWidth,
-                Camera.main.orthographicSize * 2 / bgHeight
-            )
-        );
-
-        gemMenu.transform.localScale = Vector3.one * 2 * (cameraWidth / 7f);
-        gem = gemMenu.GetComponentInChildren<BaseGem>();
-
-        UIController.ShowMainScreen();
-        
-        SoundController.PlayMusic(GameData.GetAudioClip("bgm"), 1);
-    }
-
-    void Update() {
-        if(state == GameState.Playing) {
-            timeLeft -= Time.deltaTime;
-            if(score >= currentGoalScore) {
-                currentGoalScore += currentGoalScore + currentGoalScore/2;
-                timeLeft = 120;
-            }
-
-            if(timeLeft <= 0) {
-                GameOver();
+        public int Score
+        {
+            get { return score; }
+            set
+            {
+                UIController.UpdateComboScore(value - score, BoardController.matchCounter);
+                score = value;
+                UIController.UpdateScore(score);
             }
         }
-    #if UNITY_EDITOR
-        if(Input.GetKeyDown(KeyCode.Space)) {
-            StartCoroutine(BoardController.Instance.ShuffleBoard());
+
+        public int CurrentGoalScore
+        {
+            get { return currentGoalScore; }
+            set
+            {
+                currentGoalScore = value;
+                UIController.UpdateGoalScore(currentGoalScore);
+            }
         }
 
-        if(Input.GetKeyDown(KeyCode.H)) {
-            if(!HintController.isShowing)
-                HintController.ShowHint();
-            else
-                HintController.StopCurrentHint();
+        public float TimeLeft
+        {
+            get { return timeLeft; }
+            set
+            {
+                timeLeft = Mathf.Max(value, 0);
+                UIController.UpdateTimeLeft(timeLeft);
+            }
         }
-    #endif
-    }
 
-    public void StartGame() {
-        StartCoroutine(IEStartGame());
-    }
+        #endregion
 
-    IEnumerator IEStartGame() {
-        score = 0;
-        currentGoalScore = 50;
-        timeLeft = 120;
-        BoardController.matchCounter = 0;
-        UIController.ShowGameScreen();
-        yield return new WaitForSeconds(1f);
+        #region MONOBEHAVIOUR_METHODS
+        
+        private void Start()
+        {
+            if (autoCameraWidth)
+            {
+                cameraWidth = BoardController.width + (Camera.main.aspect * 2);
+            }
 
-        TouchController.disabled = true;
-        yield return new WaitForSeconds(BoardController.CreateBoard());
-        state = GameState.Playing;
-        BoardController.UpdateBoard();
-    }
+            Miscellaneous.SetCameraOrthographicSizeByWidth(Camera.main, cameraWidth);
+            float backgroundWidth = background.sprite.bounds.size.x;
+            float backgroundHeight = background.sprite.bounds.size.y;
 
-    void GameOver() {
-        if(gameOver == null)
-            gameOver = StartCoroutine(IEGameOver());
-    }
+            background.transform.localScale = Vector3.one *
+                Mathf.Max(
+                    cameraWidth / backgroundWidth,
+                    Camera.main.orthographicSize * 2 / backgroundHeight
+                );
 
-    IEnumerator IEGameOver() {
+            gemMenu.transform.localScale = Vector3.one * 2 * (cameraWidth / 7f);
+            UIController.ShowMainScreen();
+            SoundController.PlayMusic(GameData.GetAudioClip("bgm"), 1);
+        }
 
-        yield return new WaitUntil(() => !BoardController.updatingBoard);
+        private void Update()
+        {
+            if (state == GameState.Gameplay)
+            {
+                TimeLeft -= Time.deltaTime;
+                if (Score >= CurrentGoalScore)
+                {
+                    CurrentGoalScore += CurrentGoalScore + CurrentGoalScore / 2;
+                    TimeLeft = timeTotalGameplay;
+                }
 
-        if(timeLeft > 0) {
+                if (TimeLeft <= 0)
+                {
+                    GameOver();
+                }
+            }
+
+#if UNITY_EDITOR
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                StartCoroutine(BoardController.Instance.ShuffleBoard());
+            }
+#endif
+        }
+
+        #endregion
+
+        #region PUBLIC_METHODS
+
+        public void StartGame()
+        {
+            StartCoroutine(StartGame_Coroutine());
+        }
+
+        public void ShowGemMenu(bool show = true)
+        {
+            if (!show)
+            {
+                if (changeGem != null)
+                {
+                    StopCoroutine(changeGem);
+                    changeGem = null;
+                }
+            }
+        }
+
+        #endregion
+
+        #region PRIVATE_METHODS
+
+        private void GameOver()
+        {
+            if (gameOver == null)
+            {
+                gameOver = StartCoroutine(GameOver_Coroutine());
+            }
+        }
+
+        #endregion
+
+        #region COROUTINES
+
+        private IEnumerator StartGame_Coroutine()
+        {
+            Score = 0;
+            CurrentGoalScore = 50;
+            TimeLeft = timeTotalGameplay;
+            BoardController.matchCounter = 0;
+            UIController.ShowGameScreen();
+            yield return new WaitForSeconds(1f);
+            TouchController.disabled = true;
+            yield return new WaitForSeconds(BoardController.CreateBoard());
+            state = GameState.Gameplay;
+            BoardController.UpdateBoard();
+        }
+
+        private IEnumerator GameOver_Coroutine()
+        {
+            yield return new WaitUntil(() => !BoardController.updatingBoard);
+
+            if (TimeLeft > 0)
+            {
+                gameOver = null;
+                yield break;
+            }
+
+            TouchController.disabled = true;
+            state = GameState.None;
+            UIController.ShowMessage("Game Over");
+            yield return new WaitForSeconds(BoardController.DestroyGems() + .5f);
+            UIController.ShowMainScreen();
             gameOver = null;
-            yield break;
         }
 
-        TouchController.disabled = true;
-        state = GameState.Menu;
-        HintController.StopCurrentHint();
-        HintController.StopHinting();
-        UIController.ShowMsg("Game Over");
-        yield return new WaitForSeconds(BoardController.DestroyGems() + .5f);
-        UIController.ShowMainScreen();
-        gameOver = null;
+        #endregion
     }
-
-    public static void ShowGemMenu(bool show = true) {
-        if(show) {
-            //instance.changeGem = instance.StartCoroutine(instance.IEChangeGem());
-        } else {
-            //instance.gem.Matched();
-            if(Instance.changeGem != null) {
-                Instance.StopCoroutine(Instance.changeGem);
-                Instance.changeGem = null;            }
-        }
-    }
-
-    //IEnumerator IEChangeGem() {
-    //    gemMenu.gameObject.SetActive(true);
-    //    gem.SetType(GameData.RandomGem());
-        
-    //    yield return new WaitForSeconds(gem.Creating() * 3);
-
-    //    yield return new WaitForSeconds(gem.Matched());
-        
-    //    changeGem = StartCoroutine(IEChangeGem());
-    //}
 }

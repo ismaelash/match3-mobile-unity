@@ -3,13 +3,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Utilities;
+using Utils;
 
-public class BoardController : SingletonMonoBehaviour<BoardController> {
-    
+
+public class BoardController : SingletonMonoBehaviour<BoardController>
+{   
     Coroutine updateBoard = null;
     
-    [Header("Board Dimensions")]
+    [Header("Config Board")]
     [SerializeField]
     int _width = 6;
     public static int width {
@@ -186,8 +187,8 @@ public class BoardController : SingletonMonoBehaviour<BoardController> {
             yield return StartCoroutine(IESwapGems(from, to));
             EnableUpdateBoard(false);
         } else {
-            HintController.StopCurrentHint();
-            HintController.StopHinting();
+            //HintController.StopCurrentHint();
+            //HintController.StopHinting();
 
             List<MatchInfo> matches = new List<MatchInfo>();
             List<Vector2Int> fallPositions = new List<Vector2Int>();
@@ -250,19 +251,22 @@ public class BoardController : SingletonMonoBehaviour<BoardController> {
 
         yield return StartCoroutine(FindChainMatches());
 
-        if(GameController.timeLeft <= 0) {
+        if (GameController.Instance.TimeLeft <= 0) {
             EnableUpdateBoard(false);
             yield break;
         }
 
         HintController.FindHints();
-        if(!HintController.hasHints) {
+        if (!HintController.hasHints)
+        {
             yield return StartCoroutine(ShuffleBoard());
             UpdateBoard();
-        } else {
+        }
+        else
+        {
             EnableUpdateBoard(false);
             matchCounter = 0;
-            HintController.StartHinting();
+            //HintController.StartHinting();
             if(EndUpdatingBoard != null)
                 EndUpdatingBoard();
         }
@@ -525,8 +529,8 @@ public class BoardController : SingletonMonoBehaviour<BoardController> {
 
         }
 
-        GameController.score += score * matchCounter;
-        UIController.ShowMsg($"{ GameData.GetComboMessage(matchCounter - 1) }");
+        GameController.Instance.Score += score * matchCounter;
+        UIController.ShowMessage($"{ GameData.GetComboMessage(matchCounter - 1) }");
         SoundController.PlaySfx(GameData.GetAudioClip("match"));
         
         yield return new WaitForSeconds(maxDuration/2);

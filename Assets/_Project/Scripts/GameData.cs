@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Utilities;
+using Utils;
 
 public enum GemType {
     Milk,

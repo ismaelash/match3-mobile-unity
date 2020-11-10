@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Utilities;
+using Utils;
 
 [System.Serializable]
 public class HintInfo
@@ -10,12 +10,14 @@ public class HintInfo
     public BaseGem currentSwap;
     public List<BaseGem> swaps = new List<BaseGem>();
 
-    public HintInfo(BaseGem gem) {
+    public HintInfo(BaseGem gem)
+    {
         this.gem = gem;
     }
 }
 
-public class HintController : SingletonMonoBehaviour<HintController> {
+public class HintController : SingletonMonoBehaviour<HintController>
+{
 
     List<HintInfo> hints = new List<HintInfo>();
     HintInfo currentHint;
@@ -23,18 +25,21 @@ public class HintController : SingletonMonoBehaviour<HintController> {
 
     public float hintDelay = 30f;
 
-    public static bool hasHints {
+    public static bool hasHints
+    {
         get { return Instance.hints.Count > 0; }
     }
 
-    public static bool isShowing {
+    public static bool isShowing
+    {
         get { return Instance.currentHint != null; }
     }
 
     public static bool paused;
-    
-    HintInfo GetHint(BaseGem gem, BaseGem otherGem) {
-        if(!(gem && otherGem))
+
+    HintInfo GetHint(BaseGem gem, BaseGem otherGem)
+    {
+        if (!(gem && otherGem))
             return null;
 
         HintInfo hintInfo = null;
@@ -47,10 +52,13 @@ public class HintController : SingletonMonoBehaviour<HintController> {
         MatchInfo matchA = gem.GetMatch();
         MatchInfo matchB = otherGem.GetMatch();
 
-        if(matchA.isValid) {
+        if (matchA.isValid)
+        {
             hintInfo = hintA != null ? hintA : new HintInfo(gem);
             hintInfo.swaps.Add(otherGem);
-        } else if(matchB.isValid) {
+        }
+        else if (matchB.isValid)
+        {
             hintInfo = hintB != null ? hintB : new HintInfo(otherGem);
             hintInfo.swaps.Add(gem);
         }
@@ -60,36 +68,43 @@ public class HintController : SingletonMonoBehaviour<HintController> {
         return hintInfo;
     }
 
-    public static void FindHints() {
+    public static void FindHints()
+    {
         Instance.hints.Clear();
 
-        for(int j = 0; j < BoardController.height; ++j) {
-            for(int i = 0; i < BoardController.width; ++i) {
+        for (int j = 0; j < BoardController.height; ++j)
+        {
+            for (int i = 0; i < BoardController.width; ++i)
+            {
                 BaseGem gem = BoardController.GetGem(i, j);
 
                 // Swap Right
                 BaseGem otherGem = BoardController.GetGem(i + 1, j);
-                if(otherGem && otherGem.type != gem.type) {
+                if (otherGem && otherGem.type != gem.type)
+                {
                     HintInfo hintInfo = Instance.GetHint(gem, otherGem);
 
-                    if(hintInfo != null && !Instance.hints.Contains(hintInfo))
+                    if (hintInfo != null && !Instance.hints.Contains(hintInfo))
                         Instance.hints.Add(hintInfo);
                 }
 
                 // Swap Up
                 otherGem = BoardController.GetGem(i, j + 1);
-                if(otherGem && otherGem.type != gem.type) {
+                if (otherGem && otherGem.type != gem.type)
+                {
                     HintInfo hintInfo = Instance.GetHint(gem, otherGem);
 
-                    if(hintInfo != null && !Instance.hints.Contains(hintInfo))
+                    if (hintInfo != null && !Instance.hints.Contains(hintInfo))
                         Instance.hints.Add(hintInfo);
                 }
             }
         }
     }
 
-    public static void ShowHint() {
-        if(hasHints && !isShowing) {
+    public static void ShowHint()
+    {
+        if (hasHints && !isShowing)
+        {
             HintInfo hintInfo = Instance.hints[
                 Random.Range(0, Instance.hints.Count)
             ];
@@ -103,29 +118,34 @@ public class HintController : SingletonMonoBehaviour<HintController> {
         }
     }
 
-    public static void StopCurrentHint() {
-        if(isShowing) {
-            Instance.currentHint.gem.Hint(false);
-            Instance.currentHint.currentSwap.Hint(false);
-            Instance.currentHint = null;
-        }
-    }
+    //public static void StopCurrentHint()
+    //{
+    //    if (isShowing)
+    //    {
+    //        Instance.currentHint.gem.Hint(false);
+    //        Instance.currentHint.currentSwap.Hint(false);
+    //        Instance.currentHint = null;
+    //    }
+    //}
 
-    public static void StartHinting() {
-        if(Instance.hinting == null && !isShowing)
-            Instance.hinting = Instance.StartCoroutine(
-                Instance.IEStartHinting()
-            );
-    }
+    //public static void StartHinting()
+    //{
+    //    if (Instance.hinting == null && !isShowing)
+    //        Instance.hinting = Instance.StartCoroutine(
+    //            Instance.IEStartHinting()
+    //        );
+    //}
 
-    public static void StopHinting() {
-        if(Instance.hinting != null)
-            Instance.StopCoroutine(Instance.hinting);
-        
-        Instance.hinting = null;
-    }
+    //public static void StopHinting()
+    //{
+    //    if (Instance.hinting != null)
+    //        Instance.StopCoroutine(Instance.hinting);
 
-    IEnumerator IEStartHinting() {
+    //    Instance.hinting = null;
+    //}
+
+    IEnumerator IEStartHinting()
+    {
 
         paused = false;
         yield return new WaitForSecondsAndNotPaused(hintDelay, () => paused);

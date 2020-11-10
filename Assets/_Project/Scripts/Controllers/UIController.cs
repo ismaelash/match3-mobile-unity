@@ -1,10 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Utilities;
+using Utils;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using IsmaelNascimento.Controllers;
 
 public class UIController : SingletonMonoBehaviour<UIController> {
 
@@ -39,22 +40,22 @@ public class UIController : SingletonMonoBehaviour<UIController> {
     float timePulse;
 
     public static void ShowMainScreen() {
-        UpdateHighScore(GameController.highscore);
+        //UpdateHighScore(GameController.highscore);
         Instance.StartCoroutine(
             Instance.IEChangeScreen(Instance.mainScreen, executeAfter: () => {
-                GameController.ShowGemMenu();
+                GameController.Instance.ShowGemMenu();
             })
         );
     }
 
     public static void ShowGameScreen() {
         
-        UpdateScore(GameController.score);
-        UpdateGoalScore(GameController.currentGoalScore);
-        UpdateTimeLeft(GameController.timeLeft);
+        UpdateScore(GameController.Instance.Score);
+        UpdateGoalScore(GameController.Instance.CurrentGoalScore);
+        UpdateTimeLeft(GameController.Instance.TimeLeft);
         Instance.StartCoroutine(
             Instance.IEChangeScreen(Instance.gameScreen, () => {
-                GameController.ShowGemMenu(false);
+                GameController.Instance.ShowGemMenu(false);
             })
         );
     }
@@ -73,9 +74,9 @@ public class UIController : SingletonMonoBehaviour<UIController> {
     }
 
     
-    public static void UpdateHighScore(int score) {
-        Instance.highscoreText.text = $"High Score: { score }";
-    }
+    //public static void UpdateHighScore(int score) {
+    //    Instance.highscoreText.text = $"High Score: { score }";
+    //}
 
     public static void UpdateGoalScore(int goalScore) {
         Instance.goalScoreText.text = $"/{ goalScore }";
@@ -83,15 +84,15 @@ public class UIController : SingletonMonoBehaviour<UIController> {
     }
 
     public static void UpdateTimeLeft(float timeLeft) {
-        if(timeLeft <= 30) {
-            if(Time.time - Instance.timePulse > 1f) {
-                Instance.timeLeftText.GetComponent<Animator>().SetTrigger("pulse");
-                Instance.timePulse = Time.time;
-                SoundController.PlaySfxInstance(GameData.GetAudioClip("click"));
-            }
-        } else {
-            Instance.timePulse = 0;
-        }
+        //if(timeLeft <= 30) {
+        //    if(Time.time - Instance.timePulse > 1f) {
+        //        Instance.timeLeftText.GetComponent<Animator>().SetTrigger("pulse");
+        //        Instance.timePulse = Time.time;
+        //        SoundController.PlaySfxInstance(GameData.GetAudioClip("click"));
+        //    }
+        //} else {
+        //    Instance.timePulse = 0;
+        //}
         
         System.TimeSpan timeSpan = System.TimeSpan.FromSeconds(timeLeft);
         string mm = timeSpan.Minutes.ToString("D2");
@@ -99,7 +100,7 @@ public class UIController : SingletonMonoBehaviour<UIController> {
         Instance.timeLeftText.text = $"{ mm }:{ ss }";
     }
 
-    public static void ShowMsg(string msg) {
+    public static void ShowMessage(string msg) {
         Instance.msgText.text = $"{ msg }";
         Instance.msgText.transform.GetComponent<Animator>().SetTrigger("pulse");
     }

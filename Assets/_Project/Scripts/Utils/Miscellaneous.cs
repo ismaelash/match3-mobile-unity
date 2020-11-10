@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Utilities {
+namespace Utils {
 	public static class Miscellaneous {
 		// Cooodernadas Horizontal e Vetical, 0:y, 1:x
 		public static int[, ] coord4 = new int[, ] {

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Utilities {
+namespace Utils {
 	public abstract class SingletonScriptableObject<T> :
 		ScriptableObject where T : ScriptableObject {
 		static T _instance = null;

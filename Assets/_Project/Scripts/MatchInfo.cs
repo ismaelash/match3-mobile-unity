@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 [System.Flags]
@@ -11,7 +9,8 @@ public enum MatchType {
     Cross       //00000011
 }
 
-public class MatchInfo {
+public class MatchInfo
+{
     Vector2Int minPosition;
     Vector2Int maxPosition;
 

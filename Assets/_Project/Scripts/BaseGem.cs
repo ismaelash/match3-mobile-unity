@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Utilities;
+using Utils;
 
 [RequireComponent(typeof(SpriteRenderer))]
 public class BaseGem : MonoBehaviour, ITouchable
