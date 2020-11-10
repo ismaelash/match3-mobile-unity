@@ -46,7 +46,7 @@ namespace IsmaelNascimento.Controllers
             get { return score; }
             set
             {
-                UIController.UpdateComboScore(value - score, BoardController.matchCounter);
+                UIController.UpdateComboScore(value - score, BoardController.Instance.MatchCounter);
                 score = value;
                 UIController.UpdateScore(score);
             }
@@ -84,7 +84,7 @@ namespace IsmaelNascimento.Controllers
         {
             if (autoCameraWidth)
             {
-                cameraWidth = BoardController.width + (Camera.main.aspect * 2);
+                cameraWidth = BoardController.Instance.Width + (Camera.main.aspect * 2);
             }
 
             Miscellaneous.SetCameraOrthographicSizeByWidth(Camera.main, cameraWidth);
@@ -122,7 +122,7 @@ namespace IsmaelNascimento.Controllers
 #if UNITY_EDITOR
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                StartCoroutine(BoardController.Instance.ShuffleBoard());
+                BoardController.Instance.ShuffleBoard();
             }
 #endif
         }
@@ -169,18 +169,18 @@ namespace IsmaelNascimento.Controllers
             Score = 0;
             CurrentGoalScore = 50;
             TimeLeft = timeTotalGameplay;
-            BoardController.matchCounter = 0;
+            BoardController.Instance.MatchCounter = 0;
             UIController.ShowGameScreen();
             yield return new WaitForSeconds(1f);
             TouchController.Instance.IsDisabled = true;
-            yield return new WaitForSeconds(BoardController.CreateBoard());
+            yield return new WaitForSeconds(BoardController.Instance.CreateBoard());
             state = GameState.Gameplay;
-            BoardController.UpdateBoard();
+            BoardController.Instance.UpdateBoard();
         }
 
         private IEnumerator GameOver_Coroutine()
         {
-            yield return new WaitUntil(() => !BoardController.updatingBoard);
+            yield return new WaitUntil(() => !BoardController.Instance.IsUpdatingBoard);
 
             if (TimeLeft > 0)
             {
@@ -191,7 +191,7 @@ namespace IsmaelNascimento.Controllers
             TouchController.Instance.IsDisabled = true;
             state = GameState.None;
             UIController.ShowMessage("Game Over");
-            yield return new WaitForSeconds(BoardController.DestroyGems() + .5f);
+            yield return new WaitForSeconds(BoardController.Instance.DestroyGems() + .5f);
             UIController.ShowMainScreen();
             gameOver = null;
         }

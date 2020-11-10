@@ -33,14 +33,17 @@ public class BaseGem : MonoBehaviour, ITouchable
         set { _minMatch = value; }
     }
 
-    public virtual Func<BaseGem, bool> validateGem {
-        get {
+    public virtual Func<BaseGem, bool> validateGem
+    {
+        get
+        {
             return gem => gem.type == type;
         }
     }
 
-    public virtual MatchInfo GetMatch() {
-        return BoardController.GetCrossMatch(this, validateGem);
+    public virtual MatchInfo GetMatch()
+    {
+        return BoardController.Instance.GetCrossMatch(this, validateGem);
     }
     
     void Awake() {
@@ -56,7 +59,7 @@ public class BaseGem : MonoBehaviour, ITouchable
 
     public void SetPosition(Vector2Int position) {
         this.position = position;
-        BoardController.gemBoard[position.x, position.y] = this;
+        BoardController.Instance.GemBoard[position.x, position.y] = this;
     }
 
     public float MoveTo(Vector3 target, float speed, float delay = 0) {
@@ -132,15 +135,15 @@ public class BaseGem : MonoBehaviour, ITouchable
             if(Mathf.Abs(delta.x) > Mathf.Abs(delta.y)) {
 
                 int swapX = (int) (position.x + Mathf.Sign(delta.x));
-                otherGem = BoardController.GetGem(swapX, position.y);
+                otherGem = BoardController.Instance.GetGem(swapX, position.y);
             } else {
                 
                 int swapY = (int) (position.y + Mathf.Sign(delta.y));
-                otherGem = BoardController.GetGem(position.x, swapY);
+                otherGem = BoardController.Instance.GetGem(position.x, swapY);
             }
 
             if(otherGem) {
-                BoardController.TryMatch(this, otherGem);
+                BoardController.Instance.TryMatch(this, otherGem);
                 SoundController.PlaySfx(GameData.GetAudioClip("swap"));
             }
 

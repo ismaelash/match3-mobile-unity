@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IsmaelNascimento.Controllers;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,16 +38,16 @@ public class BlenderGem : BaseGem {
     }
 
     void OnEnable() {
-        BoardController.EndUpdatingBoard += ResetSpecialGem;
+        BoardController.Instance.OnEndUpdatingBoard += ResetSpecialGem;
     }
 
 
     void OnDisable() {
-        BoardController.EndUpdatingBoard -= ResetSpecialGem;
+        BoardController.Instance.OnEndUpdatingBoard -= ResetSpecialGem;
     }
 
     public override MatchInfo GetMatch() {
-        MatchInfo matchInfo = BoardController.GetCrossMatch(this, validateGem);
+        MatchInfo matchInfo = BoardController.Instance.GetCrossMatch(this, validateGem);
         List<MatchInfo> matchInfosChain = new List<MatchInfo>();
         
         activated = true;

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using IsmaelNascimento.Controllers;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Utils;
@@ -47,7 +48,7 @@ public class HintController : SingletonMonoBehaviour<HintController>
         HintInfo hintA = hints.Find(h => h.gem == gem);
         HintInfo hintB = hints.Find(h => h.gem == otherGem);
 
-        BoardController.SwapGems(gem, otherGem);
+        BoardController.Instance.SwapGems(gem, otherGem);
 
         MatchInfo matchA = gem.GetMatch();
         MatchInfo matchB = otherGem.GetMatch();
@@ -63,7 +64,7 @@ public class HintController : SingletonMonoBehaviour<HintController>
             hintInfo.swaps.Add(gem);
         }
 
-        BoardController.SwapGems(gem, otherGem);
+        BoardController.Instance.SwapGems(gem, otherGem);
 
         return hintInfo;
     }
@@ -72,14 +73,14 @@ public class HintController : SingletonMonoBehaviour<HintController>
     {
         Instance.hints.Clear();
 
-        for (int j = 0; j < BoardController.height; ++j)
+        for (int j = 0; j < BoardController.Instance.Height; ++j)
         {
-            for (int i = 0; i < BoardController.width; ++i)
+            for (int i = 0; i < BoardController.Instance.Width; ++i)
             {
-                BaseGem gem = BoardController.GetGem(i, j);
+                BaseGem gem = BoardController.Instance.GetGem(i, j);
 
                 // Swap Right
-                BaseGem otherGem = BoardController.GetGem(i + 1, j);
+                BaseGem otherGem = BoardController.Instance.GetGem(i + 1, j);
                 if (otherGem && otherGem.type != gem.type)
                 {
                     HintInfo hintInfo = Instance.GetHint(gem, otherGem);
@@ -89,7 +90,7 @@ public class HintController : SingletonMonoBehaviour<HintController>
                 }
 
                 // Swap Up
-                otherGem = BoardController.GetGem(i, j + 1);
+                otherGem = BoardController.Instance.GetGem(i, j + 1);
                 if (otherGem && otherGem.type != gem.type)
                 {
                     HintInfo hintInfo = Instance.GetHint(gem, otherGem);

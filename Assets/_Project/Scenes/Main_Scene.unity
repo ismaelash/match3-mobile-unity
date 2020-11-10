@@ -1599,8 +1599,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2fbd309908a7484f87fa30ed2c865d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _width: 4
-  _height: 5
+  gemPrefab: {fileID: 0}
+  width: 6
+  height: 6
 --- !u!114 &1282053300
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2667,8 +2668,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2fbd309908a7484f87fa30ed2c865d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _width: 8
-  _height: 10
+  gemPrefab: {fileID: 5978925978501162727, guid: ee923fc9a7f328f4fb32dfaee3e8ee2b,
+    type: 3}
+  width: 6
+  height: 8
 --- !u!1 &2088267452
 GameObject:
   m_ObjectHideFlags: 0
