@@ -41,24 +41,23 @@ namespace IsmaelNascimento.Controllers
         private GameState state = GameState.None;
 
         // Properties
-        public int Score
+        public int ScoreCurrent
         {
             get { return score; }
             set
             {
-                UIController.UpdateComboScore(value - score, BoardController.Instance.MatchCounter);
                 score = value;
-                UIController.UpdateScore(score);
+                UIController.Instance.UpdateScore();
             }
         }
 
-        public int CurrentGoalScore
+        public int GoalScoreCurrent
         {
             get { return currentGoalScore; }
             set
             {
                 currentGoalScore = value;
-                UIController.UpdateGoalScore(currentGoalScore);
+                UIController.Instance.UpdateScore();
             }
         }
 
@@ -68,7 +67,7 @@ namespace IsmaelNascimento.Controllers
             set
             {
                 timeLeft = Mathf.Max(value, 0);
-                UIController.UpdateTimeLeft(timeLeft);
+                UIController.Instance.UpdateTimeLeft(timeLeft);
             }
         }
 
@@ -98,7 +97,7 @@ namespace IsmaelNascimento.Controllers
                 );
 
             gemMenu.transform.localScale = Vector3.one * 2 * (cameraWidth / 7f);
-            UIController.ShowMainScreen();
+            UIController.Instance.ShowMainScreen();
             SoundController.PlayMusic(GameData.GetAudioClip("bgm"), 1);
         }
 
@@ -107,9 +106,9 @@ namespace IsmaelNascimento.Controllers
             if (state == GameState.Gameplay)
             {
                 TimeLeft -= Time.deltaTime;
-                if (Score >= CurrentGoalScore)
+                if (ScoreCurrent >= GoalScoreCurrent)
                 {
-                    CurrentGoalScore += CurrentGoalScore + CurrentGoalScore / 2;
+                    GoalScoreCurrent += GoalScoreCurrent + GoalScoreCurrent / 2;
                     TimeLeft = timeTotalGameplay;
                 }
 
@@ -166,11 +165,11 @@ namespace IsmaelNascimento.Controllers
 
         private IEnumerator StartGame_Coroutine()
         {
-            Score = 0;
-            CurrentGoalScore = 50;
+            ScoreCurrent = 0;
+            GoalScoreCurrent = 50;
             TimeLeft = timeTotalGameplay;
             BoardController.Instance.MatchCounter = 0;
-            UIController.ShowGameScreen();
+            UIController.Instance.ShowGameScreen();
             yield return new WaitForSeconds(1f);
             TouchController.Instance.IsDisabled = true;
             yield return new WaitForSeconds(BoardController.Instance.CreateBoard());
@@ -190,9 +189,8 @@ namespace IsmaelNascimento.Controllers
 
             TouchController.Instance.IsDisabled = true;
             state = GameState.None;
-            UIController.ShowMessage("Game Over");
             yield return new WaitForSeconds(BoardController.Instance.DestroyGems() + .5f);
-            UIController.ShowMainScreen();
+            UIController.Instance.ShowMainScreen();
             gameOver = null;
         }
 

@@ -551,8 +551,7 @@ namespace IsmaelNascimento.Controllers
                 score += matchInfo.GetScore();
             }
 
-            GameController.Instance.Score += score * MatchCounter;
-            UIController.ShowMessage($"{ GameData.GetComboMessage(MatchCounter - 1) }");
+            GameController.Instance.ScoreCurrent += score * MatchCounter;
             SoundController.PlaySfx(GameData.GetAudioClip("match"));
 
             yield return new WaitForSeconds(maxDuration / 2);
