@@ -267,15 +267,14 @@ public class BoardController : SingletonMonoBehaviour<BoardController>
             EnableUpdateBoard(false);
             matchCounter = 0;
             //HintController.StartHinting();
-            if(EndUpdatingBoard != null)
-                EndUpdatingBoard();
+            EndUpdatingBoard?.Invoke();
         }
     }
 
     static void EnableUpdateBoard(bool enable) {
         updatingBoard = enable;
         HintController.paused = enable;
-        TouchController.disabled = enable;
+        TouchController.Instance.disabled = enable;
     }
 
     // Check for matches in all Board

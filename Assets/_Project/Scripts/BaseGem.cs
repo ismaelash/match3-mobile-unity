@@ -122,11 +122,10 @@ public class BaseGem : MonoBehaviour, ITouchable
 
     public void TouchDrag() {
         if(Vector2.Distance(
-            transform.position, TouchController.touchPosition
+            transform.position, TouchController.Instance.touchPosition
         ) > 0.75f) {
 
-            Vector2 delta = TouchController.touchPosition -
-                            transform.position;
+            Vector2 delta = TouchController.Instance.touchPosition - transform.position;
 
             BaseGem otherGem;
 
@@ -150,11 +149,13 @@ public class BaseGem : MonoBehaviour, ITouchable
             
     }
 
-    public void TouchUp() {
-        TouchController.ClearElementClicked();
+    public void TouchUp()
+    {
+        TouchController.Instance.ClearElementClicked();
     }
 
-    public void DestroyGem() {
+    public void DestroyGem()
+    {
         Destroy(gameObject, Matched());
     }
 }

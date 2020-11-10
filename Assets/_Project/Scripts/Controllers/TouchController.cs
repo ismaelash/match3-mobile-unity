@@ -5,31 +5,33 @@ namespace IsmaelNascimento.Controllers
 {
 	public class TouchController : SingletonMonoBehaviour<TouchController>
 	{
-		public static Vector3 touchPosition;
-		public static bool disabled = false;
-		ITouchable elementClicked;
+		public Vector3 touchPosition;
+		public bool disabled = false;
+		private ITouchable elementClicked;
+		private Vector3 lastPosition;
 
-		void Update()
+		private void Update()
 		{
-			if (disabled) return;
+			if (disabled)
+            {
+				return;
+			}
 
 #if UNITY_EDITOR || UNITY_WEBGL
-			HandleInputDesktop();
+		HandleInputDesktop();
 #elif UNITY_ANDROID || UNITY_IOS
 		HandleInputMobile();
 #endif
 		}
 
-		void HandleInputMobile()
+		private void HandleInputMobile()
 		{
 			if (Input.touchCount == 1)
 			{
 				Touch touch = Input.GetTouch(0);
 				touchPosition = (Vector2)Camera.main.ScreenToWorldPoint(touch.position);
 
-				RaycastHit2D raycastHit = Physics2D.Raycast(
-					touchPosition, Vector3.forward, Mathf.Infinity
-				);
+				RaycastHit2D raycastHit = Physics2D.Raycast(touchPosition, Vector3.forward, Mathf.Infinity);
 
 				if (elementClicked != null)
 				{
@@ -48,11 +50,13 @@ namespace IsmaelNascimento.Controllers
 				{
 					if (raycastHit)
 					{
-						elementClicked = raycastHit.collider
-										.GetComponent<ITouchable>();
+						elementClicked = raycastHit.collider.GetComponent<ITouchable>();
 					}
+
 					if (elementClicked != null)
+                    {
 						elementClicked.TouchDown();
+					}
 				}
 			}
 			else
@@ -61,24 +65,21 @@ namespace IsmaelNascimento.Controllers
 			}
 		}
 
-#if UNITY_EDITOR || UNITY_WEBGL
-		Vector3 lastPosition;
-		void HandleInputDesktop()
+		private void HandleInputDesktop()
 		{
 			lastPosition = touchPosition;
-			touchPosition = (Vector2)Camera.main
-							.ScreenToWorldPoint(Input.mousePosition);
+			touchPosition = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-			RaycastHit2D raycastHit = Physics2D.Raycast(
-				touchPosition, Vector3.forward, Mathf.Infinity
-			);
+			RaycastHit2D raycastHit = Physics2D.Raycast(touchPosition, Vector3.forward, Mathf.Infinity);
 
 			if (elementClicked != null)
 			{
 				if (Input.GetMouseButton(0))
 				{
 					if (lastPosition != touchPosition)
+                    {
 						elementClicked.TouchDrag();
+					}
 				}
 				else
 				{
@@ -90,27 +91,17 @@ namespace IsmaelNascimento.Controllers
 			{
 				if (raycastHit)
 				{
-					elementClicked = raycastHit.collider
-									.GetComponent<ITouchable>();
+					elementClicked = raycastHit.collider.GetComponent<ITouchable>();
 				}
 
 				if (elementClicked != null)
+                {
 					elementClicked.TouchDown();
-
+				}
 			}
 		}
 
-#endif
-
-		//public static void ClearElementClicked(ITouchable other)
-		//{
-		//	if (Instance.elementClicked == other)
-		//	{
-		//		ClearElementClicked();
-		//	}
-		//}
-
-		public static void ClearElementClicked()
+		public void ClearElementClicked()
 		{
 			Instance.elementClicked = null;
 		}

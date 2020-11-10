@@ -166,7 +166,7 @@ namespace IsmaelNascimento.Controllers
             BoardController.matchCounter = 0;
             UIController.ShowGameScreen();
             yield return new WaitForSeconds(1f);
-            TouchController.disabled = true;
+            TouchController.Instance.disabled = true;
             yield return new WaitForSeconds(BoardController.CreateBoard());
             state = GameState.Gameplay;
             BoardController.UpdateBoard();
@@ -182,7 +182,7 @@ namespace IsmaelNascimento.Controllers
                 yield break;
             }
 
-            TouchController.disabled = true;
+            TouchController.Instance.disabled = true;
             state = GameState.None;
             UIController.ShowMessage("Game Over");
             yield return new WaitForSeconds(BoardController.DestroyGems() + .5f);
