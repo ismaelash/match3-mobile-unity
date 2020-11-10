@@ -5,33 +5,54 @@ namespace IsmaelNascimento.Controllers
 {
 	public class TouchController : SingletonMonoBehaviour<TouchController>
 	{
-		public Vector3 touchPosition;
-		public bool disabled = false;
+		#region VARIABLES
+
+		// Privates
 		private ITouchable elementClicked;
 		private Vector3 lastPosition;
 
+		// Properties
+		public Vector3 TouchPosition { get; set; }
+		public bool IsDisabled { get; set; }
+
+		#endregion
+
+		#region MONOBEHAVIOUR_METHODS
+
 		private void Update()
 		{
-			if (disabled)
-            {
+			if (IsDisabled)
+			{
 				return;
 			}
 
 #if UNITY_EDITOR || UNITY_WEBGL
-		HandleInputDesktop();
+			HandleInputDesktop();
 #elif UNITY_ANDROID || UNITY_IOS
 		HandleInputMobile();
 #endif
 		}
+
+		#endregion
+
+		#region PUBLIC_METHODS
+
+		public void ClearElementClicked()
+		{
+			Instance.elementClicked = null;
+		}
+
+		#endregion
+
+		#region PRIVATE_METHODS
 
 		private void HandleInputMobile()
 		{
 			if (Input.touchCount == 1)
 			{
 				Touch touch = Input.GetTouch(0);
-				touchPosition = (Vector2)Camera.main.ScreenToWorldPoint(touch.position);
-
-				RaycastHit2D raycastHit = Physics2D.Raycast(touchPosition, Vector3.forward, Mathf.Infinity);
+				TouchPosition = (Vector2)Camera.main.ScreenToWorldPoint(touch.position);
+				RaycastHit2D raycastHit = Physics2D.Raycast(TouchPosition, Vector3.forward, Mathf.Infinity);
 
 				if (elementClicked != null)
 				{
@@ -54,7 +75,7 @@ namespace IsmaelNascimento.Controllers
 					}
 
 					if (elementClicked != null)
-                    {
+					{
 						elementClicked.TouchDown();
 					}
 				}
@@ -67,17 +88,16 @@ namespace IsmaelNascimento.Controllers
 
 		private void HandleInputDesktop()
 		{
-			lastPosition = touchPosition;
-			touchPosition = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-			RaycastHit2D raycastHit = Physics2D.Raycast(touchPosition, Vector3.forward, Mathf.Infinity);
+			lastPosition = TouchPosition;
+			TouchPosition = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			RaycastHit2D raycastHit = Physics2D.Raycast(TouchPosition, Vector3.forward, Mathf.Infinity);
 
 			if (elementClicked != null)
 			{
 				if (Input.GetMouseButton(0))
 				{
-					if (lastPosition != touchPosition)
-                    {
+					if (lastPosition != TouchPosition)
+					{
 						elementClicked.TouchDrag();
 					}
 				}
@@ -95,15 +115,12 @@ namespace IsmaelNascimento.Controllers
 				}
 
 				if (elementClicked != null)
-                {
+				{
 					elementClicked.TouchDown();
 				}
 			}
 		}
 
-		public void ClearElementClicked()
-		{
-			Instance.elementClicked = null;
-		}
+		#endregion
 	}
 }

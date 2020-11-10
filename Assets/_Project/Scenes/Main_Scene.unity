@@ -1518,8 +1518,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99fa804086d7c984b9ad3af7e74762d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  touchPosition: {x: 0, y: 0, z: 0}
-  disabled: 0
 --- !u!1 &1282053295
 GameObject:
   m_ObjectHideFlags: 0
@@ -1589,8 +1587,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99fa804086d7c984b9ad3af7e74762d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  touchPosition: {x: 0, y: 0, z: 0}
-  disabled: 0
 --- !u!114 &1282053299
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1700,7 +1696,7 @@ MonoBehaviour:
   gemMenu: {fileID: 1380403328}
   gameData: {fileID: 11400000, guid: dffda7e03a8d7bc48bde3ca9e3e6174e, type: 2}
   timeTotalGameplay: 120
-  swapSpeed: 6
+  swapSpeed: 7
   fallSpeed: 10
   preventInitialMatches: 1
 --- !u!1 &1380403328
@@ -2671,8 +2667,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2fbd309908a7484f87fa30ed2c865d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _width: 4
-  _height: 5
+  _width: 8
+  _height: 10
 --- !u!1 &2088267452
 GameObject:
   m_ObjectHideFlags: 0

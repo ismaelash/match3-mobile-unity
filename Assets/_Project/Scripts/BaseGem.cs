@@ -122,10 +122,10 @@ public class BaseGem : MonoBehaviour, ITouchable
 
     public void TouchDrag() {
         if(Vector2.Distance(
-            transform.position, TouchController.Instance.touchPosition
+            transform.position, TouchController.Instance.TouchPosition
         ) > 0.75f) {
 
-            Vector2 delta = TouchController.Instance.touchPosition - transform.position;
+            Vector2 delta = TouchController.Instance.TouchPosition - transform.position;
 
             BaseGem otherGem;
 

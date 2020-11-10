@@ -59,7 +59,7 @@ public class BoardController : SingletonMonoBehaviour<BoardController>
                     delayLine
                 );
 
-                if(GameController.Instance.preventInitialMatches) {
+                if(GameController.Instance.PreventInitialMatches) {
                     while(gem.GetMatch().isValid) {
                         gem.SetType(GameData.RandomGem());
                     }
@@ -67,7 +67,7 @@ public class BoardController : SingletonMonoBehaviour<BoardController>
 
                 float duration = gem.MoveTo(
                     GetWorldPosition(gem.position),
-                    GameController.Instance.fallSpeed,
+                    GameController.Instance.FallSpeed,
                     delayLine
                 );
 
@@ -160,10 +160,10 @@ public class BoardController : SingletonMonoBehaviour<BoardController>
     IEnumerator IESwapGems(BaseGem from, BaseGem to) {
 
         float durationFrom = from.MoveTo(
-            GetWorldPosition(to.position), GameController.Instance.swapSpeed
+            GetWorldPosition(to.position), GameController.Instance.SwapSpeed
         );
         float durationTo = to.MoveTo(
-            GetWorldPosition(from.position), GameController.Instance.swapSpeed
+            GetWorldPosition(from.position), GameController.Instance.SwapSpeed
         );
 
         yield return new WaitForSeconds(Mathf.Max(durationFrom, durationTo));
@@ -274,7 +274,7 @@ public class BoardController : SingletonMonoBehaviour<BoardController>
     static void EnableUpdateBoard(bool enable) {
         updatingBoard = enable;
         HintController.paused = enable;
-        TouchController.Instance.disabled = enable;
+        TouchController.Instance.IsDisabled = enable;
     }
 
     // Check for matches in all Board
@@ -340,7 +340,7 @@ public class BoardController : SingletonMonoBehaviour<BoardController>
                 if(gem) {
                     float duration = gem.MoveTo(
                         GetWorldPosition(new Vector2Int(fall.x, y - fallY)),
-                        GameController.Instance.fallSpeed
+                        GameController.Instance.FallSpeed
                     );
 
                     gem.SetPosition(new Vector2Int(fall.x, y - fallY));
@@ -362,7 +362,7 @@ public class BoardController : SingletonMonoBehaviour<BoardController>
                 
                 float duration = newGem.MoveTo(
                     GetWorldPosition(newGem.position),
-                    GameController.Instance.fallSpeed,
+                    GameController.Instance.FallSpeed,
                     delay
                 );
                 delay = duration;
@@ -477,7 +477,7 @@ public class BoardController : SingletonMonoBehaviour<BoardController>
                 gemBoard[i, j].SetPosition(new Vector2Int(i, j));
                 float duration = gemBoard[i, j].MoveTo(
                     GetWorldPosition(gemBoard[i, j].position),
-                    GameController.Instance.fallSpeed * (
+                    GameController.Instance.FallSpeed * (
                         gemBoard[i, j].transform.position -
                         GetWorldPosition(gemBoard[i, j].position)
                     ).magnitude/4
@@ -511,7 +511,7 @@ public class BoardController : SingletonMonoBehaviour<BoardController>
 
                 newGem.MoveTo(
                     GetWorldPosition(newGem.position),
-                    GameController.Instance.fallSpeed
+                    GameController.Instance.FallSpeed
                 );
 
                 duration += newGemDuration;
@@ -557,7 +557,7 @@ public class BoardController : SingletonMonoBehaviour<BoardController>
             if(moveToPivot)
                 duration = Mathf.Max(duration, gem.MoveTo(
                     pivotPosition,
-                    GameController.Instance.fallSpeed
+                    GameController.Instance.FallSpeed
                 ));
 
             if(duration > maxDuration)

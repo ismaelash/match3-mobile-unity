@@ -28,10 +28,11 @@ namespace IsmaelNascimento.Controllers
         [Header("Game Settings")]
         [SerializeField] private GameData gameData;
         [SerializeField] [Tooltip("Seconds")] private int timeTotalGameplay = 120;
-        public float swapSpeed;
-        public float fallSpeed;
-        public bool preventInitialMatches;
+        [SerializeField] private float swapSpeed;
+        [SerializeField] private float fallSpeed;
+        [SerializeField] private bool preventInitialMatches;
 
+        // Privates
         private Coroutine changeGem;
         private Coroutine gameOver;
         private int currentGoalScore;
@@ -39,6 +40,7 @@ namespace IsmaelNascimento.Controllers
         private float timeLeft;
         private GameState state = GameState.None;
 
+        // Properties
         public int Score
         {
             get { return score; }
@@ -70,10 +72,14 @@ namespace IsmaelNascimento.Controllers
             }
         }
 
+        public float SwapSpeed { get => swapSpeed; set => swapSpeed = value; }
+        public float FallSpeed { get => fallSpeed; set => fallSpeed = value; }
+        public bool PreventInitialMatches { get => preventInitialMatches; set => preventInitialMatches = value; }
+
         #endregion
 
         #region MONOBEHAVIOUR_METHODS
-        
+
         private void Start()
         {
             if (autoCameraWidth)
@@ -166,7 +172,7 @@ namespace IsmaelNascimento.Controllers
             BoardController.matchCounter = 0;
             UIController.ShowGameScreen();
             yield return new WaitForSeconds(1f);
-            TouchController.Instance.disabled = true;
+            TouchController.Instance.IsDisabled = true;
             yield return new WaitForSeconds(BoardController.CreateBoard());
             state = GameState.Gameplay;
             BoardController.UpdateBoard();
@@ -182,7 +188,7 @@ namespace IsmaelNascimento.Controllers
                 yield break;
             }
 
-            TouchController.Instance.disabled = true;
+            TouchController.Instance.IsDisabled = true;
             state = GameState.None;
             UIController.ShowMessage("Game Over");
             yield return new WaitForSeconds(BoardController.DestroyGems() + .5f);
