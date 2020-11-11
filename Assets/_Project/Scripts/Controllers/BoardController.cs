@@ -78,8 +78,6 @@ namespace Match3.Controllers
                 delayLine = maxDuration;
             }
 
-            Debug.Log("Board Created");
-
             return maxDuration;
         }
 

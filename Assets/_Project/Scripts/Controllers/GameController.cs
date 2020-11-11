@@ -33,7 +33,6 @@ namespace Match3.Controllers
 
 
         private float cameraWidth;
-        private Coroutine changeGem;
         private Coroutine gameOver;
         private int currentGoalScore;
         private int score;
@@ -47,6 +46,7 @@ namespace Match3.Controllers
             set
             {
                 score = value;
+                EventController.Instance.OnNewScoreAction?.Invoke(value);
                 gameplayScreen.UpdateScore();
             }
         }
@@ -57,6 +57,7 @@ namespace Match3.Controllers
             set
             {
                 currentGoalScore = value;
+                EventController.Instance.OnNewGoalScore?.Invoke(value);
                 gameplayScreen.UpdateScore();
             }
         }
@@ -77,7 +78,13 @@ namespace Match3.Controllers
             set
             {
                 attempMatchesCount = value;
+                EventController.Instance.OnAttempMatch?.Invoke(value);
                 gameplayScreen.UpdateMovesCount();
+
+                if(attempMatchesCount == attempMatchesLimit)
+                {
+                    EventController.Instance.OnAttempMatchLimit?.Invoke(value);
+                }
             }
         }
 
@@ -109,6 +116,7 @@ namespace Match3.Controllers
 
                 if (TimeLeft <= 0)
                 {
+                    EventController.Instance.OnEndGameplayAction?.Invoke();
                     GameOver();
                 }
             }
@@ -159,6 +167,7 @@ namespace Match3.Controllers
             yield return new WaitForSeconds(BoardController.Instance.CreateBoard());
             state = GameState.Gameplay;
             BoardController.Instance.UpdateBoard();
+            EventController.Instance.OnStartGameAction?.Invoke();
         }
 
         private IEnumerator GameOver_Coroutine()
