@@ -77,12 +77,12 @@ namespace Match3.Controllers
             MatchInfo matchInfoA = gem.GetMatch();
             MatchInfo matchInfoB = otherGem.GetMatch();
 
-            if (matchInfoA.isValid)
+            if (matchInfoA.IsValid)
             {
                 crushInfo = crushA ?? new CrushInfo(gem);
                 crushInfo.swaps.Add(otherGem);
             }
-            else if (matchInfoB.isValid)
+            else if (matchInfoB.IsValid)
             {
                 crushInfo = crushB ?? new CrushInfo(otherGem);
                 crushInfo.swaps.Add(gem);

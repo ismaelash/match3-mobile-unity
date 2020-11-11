@@ -62,7 +62,7 @@ namespace Match3.Controllers
 
                     if (GameController.Instance.PreventInitialMatches)
                     {
-                        while (gem.GetMatch().isValid)
+                        while (gem.GetMatch().IsValid)
                         {
                             gem.SetType(GameController.Instance.GameData.RandomGem());
                         }
@@ -171,11 +171,11 @@ namespace Match3.Controllers
             MatchInfo matchInfoVertical = GetVerticalMatch(gem, validateGem);
             int crossCheck = 0;
 
-            while (!mathcInfohorizontal.isValid && crossCheck < matchInfoVertical.matches.Count)
+            while (!mathcInfohorizontal.IsValid && crossCheck < matchInfoVertical.Matches.Count)
             {
-                if (matchInfoVertical.isValid)
+                if (matchInfoVertical.IsValid)
                 {
-                    mathcInfohorizontal = GetHorizontalMatch(matchInfoVertical.matches[crossCheck], validateGem);
+                    mathcInfohorizontal = GetHorizontalMatch(matchInfoVertical.Matches[crossCheck], validateGem);
                 }
                 else
                 {
@@ -186,11 +186,11 @@ namespace Match3.Controllers
             }
 
             crossCheck = 0;
-            while (!matchInfoVertical.isValid && crossCheck < mathcInfohorizontal.matches.Count)
+            while (!matchInfoVertical.IsValid && crossCheck < mathcInfohorizontal.Matches.Count)
             {
-                if (mathcInfohorizontal.isValid)
+                if (mathcInfohorizontal.IsValid)
                 {
-                    matchInfoVertical = GetVerticalMatch(mathcInfohorizontal.matches[crossCheck], validateGem);
+                    matchInfoVertical = GetVerticalMatch(mathcInfohorizontal.Matches[crossCheck], validateGem);
                 }
                 else
                 {
@@ -202,9 +202,9 @@ namespace Match3.Controllers
 
             MatchInfo mathcInfo = MatchInfo.JoinCrossedMatches(mathcInfohorizontal, matchInfoVertical);
 
-            if (!mathcInfo.isValid)
+            if (!mathcInfo.IsValid)
             {
-                if (mathcInfohorizontal.isValid)
+                if (mathcInfohorizontal.IsValid)
                 {
                     return mathcInfohorizontal;
                 }
@@ -315,7 +315,7 @@ namespace Match3.Controllers
             MatchInfo matchFrom = from.GetMatch();
             MatchInfo matchTo = to.GetMatch();
 
-            if (!(matchFrom.isValid || matchTo.isValid))
+            if (!(matchFrom.IsValid || matchTo.IsValid))
             {
                 yield return StartCoroutine(SwapGems_Coroutine(from, to));
                 EnableUpdateBoard(false);
@@ -331,7 +331,7 @@ namespace Match3.Controllers
 
                 foreach (var matchInfo in new List<MatchInfo>(matches))
                 {
-                    if (matchInfo.isValid)
+                    if (matchInfo.IsValid)
                     {
                         fallPositions = MatchInfo.JoinFallPositions(fallPositions, matchInfo.GetFallPositions());
                     }
@@ -386,17 +386,17 @@ namespace Match3.Controllers
                 gems.Remove(current);
 
                 MatchInfo matchInfo = current.GetMatch();
-                if (matchInfo.isValid)
+                if (matchInfo.IsValid)
                 {
-                    matchInfo.matches.ForEach(gem => gems.Remove(gem));
+                    matchInfo.Matches.ForEach(gem => gems.Remove(gem));
 
-                    MatchInfo matchInfoSameType = matchInfos.Find(matchInfoData => matchInfoData.pivot.gemData.type == matchInfo.pivot.gemData.type);
+                    MatchInfo matchInfoSameType = matchInfos.Find(matchInfoData => matchInfoData.Pivot.gemData.type == matchInfo.Pivot.gemData.type);
 
                     if (matchInfoSameType != null)
                     {
                         matchInfoSameType = MatchInfo.JoinCrossedMatches(matchInfoSameType, matchInfo);
 
-                        if (matchInfoSameType.isValid)
+                        if (matchInfoSameType.IsValid)
                         {
                             matchInfos.Add(matchInfoSameType);
                             continue;
@@ -478,7 +478,7 @@ namespace Match3.Controllers
 
             foreach (MatchInfo matchInfo in matches)
             {
-                float duration = DestroyGems(matchInfo.matches, matchInfo.pivot);
+                float duration = DestroyGems(matchInfo.Matches, matchInfo.Pivot);
 
                 if (duration > maxDuration)
                 {

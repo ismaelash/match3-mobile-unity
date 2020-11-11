@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Match3.Commons
@@ -8,144 +7,101 @@ namespace Match3.Commons
     {
         #region ENUMS
 
-        [Flags]
         public enum MatchType
         {
-            Invalid,    //00000000
-            Horizontal, //00000001
-            Vertical,   //00000010
-            Cross       //00000011
+            Invalid,
+            Horizontal,
+            Vertical,
+            Cross
         }
 
         #endregion
 
         #region VARIABLES
 
-        Vector2Int minPosition;
-        Vector2Int maxPosition;
+        private Vector2Int minPosition;
+        private Vector2Int maxPosition;
+        private MatchType type;
+        private List<BaseGem> matches = new List<BaseGem>();
+        private Vector2Int pivot;
 
-        #endregion
-
-
-
-        int horizontalLenght
+        public bool IsValid
         {
-            get { return (maxPosition.x - minPosition.x) + 1; }
+            get => type != MatchType.Invalid;
         }
 
-        int verticalLenght
+        public List<BaseGem> Matches
         {
-            get { return (maxPosition.y - minPosition.y) + 1; }
+            get => new List<BaseGem>(matches);
         }
 
-        public MatchType type;
-
-        public bool isValid
-        {
-            get { return type != MatchType.Invalid; }
-        }
-
-        List<BaseGem> _matches = new List<BaseGem>();
-        public List<BaseGem> matches
-        {
-            get { return new List<BaseGem>(_matches); }
-        }
-
-        public List<MatchInfo> specialMatches = new List<MatchInfo>();
-
-        Vector2Int _pivot;
-        public BaseGem pivot
+        public BaseGem Pivot
         {
             get
             {
                 if (type == MatchType.Cross)
-                    return _matches.Find(gem => gem.gemData.position == _pivot);
+                {
+                    return matches.Find(gem => gem.gemData.position == pivot);
+                }
                 else
-                    return _matches[0];
+                {
+                    return matches[0];
+                }
             }
         }
 
+        private int HorizontalLenght
+        {
+            get => (maxPosition.x - minPosition.x) + 1;
+        }
+
+        private int VerticalLenght
+        {
+            get => (maxPosition.y - minPosition.y) + 1;
+        }
+
+        #endregion
+
+        #region PUBLIC_METHODS
+
+        // Constructor
         public MatchInfo(List<BaseGem> matches = null)
         {
             if (matches != null)
             {
-                _pivot = matches[0].gemData.position;
+                pivot = matches[0].gemData.position;
                 AddMatches(matches);
-            }
-        }
-
-        void AddMatches(List<BaseGem> matches)
-        {
-            _matches.AddRange(matches);
-            ValidateMatch();
-        }
-
-        public void RemoveMatches(List<BaseGem> matches)
-        {
-            _matches.RemoveAll(g => matches.Contains(g));
-        }
-
-        void ValidateMatch()
-        {
-            type = MatchType.Invalid;
-            minPosition = maxPosition = pivot.gemData.position;
-
-            foreach (BaseGem match in _matches)
-            {
-                int x = minPosition.x;
-                int y = minPosition.y;
-
-                if (match.gemData.position.x < minPosition.x)
-                    x = match.gemData.position.x;
-                if (match.gemData.position.y < minPosition.y)
-                    y = match.gemData.position.y;
-
-                minPosition = new Vector2Int(x, y);
-
-                x = maxPosition.x;
-                y = maxPosition.y;
-
-                if (match.gemData.position.x > maxPosition.x)
-                    x = match.gemData.position.x;
-                if (match.gemData.position.y > maxPosition.y)
-                    y = match.gemData.position.y;
-
-                maxPosition = new Vector2Int(x, y);
-
-                if (horizontalLenght >= pivot.gemData.minMatch)
-                    type |= MatchType.Horizontal;
-
-                if (verticalLenght >= pivot.gemData.minMatch)
-                    type |= MatchType.Vertical;
             }
         }
 
         public int GetScore()
         {
-            if (!isValid)
+            if (!IsValid)
+            {
                 return 0;
+            }
 
-            return _matches.Count;
+            return matches.Count;
         }
 
         // Join Crossed Matches from same type
-        public static MatchInfo JoinCrossedMatches(MatchInfo a, MatchInfo b)
+        public static MatchInfo JoinCrossedMatches(MatchInfo matchInfoA, MatchInfo matchInfoB)
         {
 
-            if (!(a.isValid && b.isValid) || a.pivot.gemData.type != b.pivot.gemData.type)
+            if (!(matchInfoA.IsValid && matchInfoB.IsValid) || matchInfoA.Pivot.gemData.type != matchInfoB.Pivot.gemData.type)
             {
                 return new MatchInfo();
             }
 
-            foreach (BaseGem match in a._matches)
+            foreach (BaseGem match in matchInfoA.matches)
             {
-                if (b._matches.Contains(match))
+                if (matchInfoB.matches.Contains(match))
                 {
-                    a._pivot = match.gemData.position;
-                    b._matches.Remove(match);
-                    a.AddMatches(b._matches);
+                    matchInfoA.pivot = match.gemData.position;
+                    matchInfoB.matches.Remove(match);
+                    matchInfoA.AddMatches(matchInfoB.matches);
 
-                    return a;
+                    return matchInfoA;
                 }
             }
 
@@ -156,9 +112,10 @@ namespace Match3.Commons
         {
             List<Vector2Int> fallPositions = new List<Vector2Int>();
 
-            _matches.ForEach(match =>
+            matches.ForEach(match =>
             {
-                int id = fallPositions.FindIndex(f => f.x == match.gemData.position.x);
+                int id = fallPositions.FindIndex(fallPosition => fallPosition.x == match.gemData.position.x);
+
                 if (id > -1 && match.gemData.position.y < fallPositions[id].y)
                 {
                     fallPositions[id] = match.gemData.position;
@@ -172,22 +129,25 @@ namespace Match3.Commons
             return fallPositions;
         }
 
-        public static List<Vector2Int> JoinFallPositions(
-            List<Vector2Int> matchA, List<Vector2Int> matchB
-        )
+        public static List<Vector2Int> JoinFallPositions(List<Vector2Int> matchA, List<Vector2Int> matchB)
         {
             List<Vector2Int> fallPositions = new List<Vector2Int>();
 
             if (matchA.Count == 0)
+            {
                 return matchB;
+            }
             else if (matchB.Count == 0)
+            {
                 return matchA;
+            }
 
             fallPositions.AddRange(matchA);
 
             matchB.ForEach(currentFall =>
             {
-                int id = fallPositions.FindIndex(f => f.x == currentFall.x);
+                int id = fallPositions.FindIndex(fallPosition => fallPosition.x == currentFall.x);
+
                 if (id > -1 && currentFall.y < fallPositions[id].y)
                 {
                     fallPositions[id] = currentFall;
@@ -200,5 +160,66 @@ namespace Match3.Commons
 
             return fallPositions;
         }
+
+        #endregion
+
+        #region PRIVATE_METHODS
+
+        private void AddMatches(List<BaseGem> matches)
+        {
+            this.matches.AddRange(matches);
+            ValidateMatch();
+        }
+
+        private void ValidateMatch()
+        {
+            type = MatchType.Invalid;
+            minPosition = maxPosition = Pivot.gemData.position;
+
+            foreach (BaseGem match in matches)
+            {
+                int x = minPosition.x;
+                int y = minPosition.y;
+
+                if (match.gemData.position.x < minPosition.x)
+                {
+                    x = match.gemData.position.x;
+                }
+
+                if (match.gemData.position.y < minPosition.y)
+                {
+                    y = match.gemData.position.y;
+                }
+
+                minPosition = new Vector2Int(x, y);
+
+                x = maxPosition.x;
+                y = maxPosition.y;
+
+                if (match.gemData.position.x > maxPosition.x)
+                {
+                    x = match.gemData.position.x;
+                }
+
+                if (match.gemData.position.y > maxPosition.y)
+                {
+                    y = match.gemData.position.y;
+                }
+
+                maxPosition = new Vector2Int(x, y);
+
+                if (HorizontalLenght >= Pivot.gemData.minMatch)
+                {
+                    type |= MatchType.Horizontal;
+                }
+
+                if (VerticalLenght >= Pivot.gemData.minMatch)
+                {
+                    type |= MatchType.Vertical;
+                }
+            }
+        }
+
+        #endregion
     }
 }
