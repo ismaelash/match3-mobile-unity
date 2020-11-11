@@ -2,163 +2,82 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using static Match3.Commons.GameData;
 
 namespace Match3.Commons
 {
     [RequireComponent(typeof(SpriteRenderer))]
     public class BaseGem : MonoBehaviour, ITouchable
     {
+        #region VARIABLES
 
-        Coroutine moveToCoroutine = null;
-        Coroutine animationCoroutine = null;
+        public GemData gemData = new GemData();
 
-        [HideInInspector]
-        public SpriteRenderer spriteRenderer;
-        [HideInInspector]
-        public Animator animator;
+        private Coroutine moveToCoroutine = null;
+        private SpriteRenderer spriteRenderer;
 
-        public Vector2Int position;
-
-        [SerializeField]
-        GemType _type;
-        public virtual GemType type
+        public Func<BaseGem, bool> ValidateGem
         {
-            get { return _type; }
-            set { _type = value; }
+            get => gem => gem.gemData.type == gemData.type;
         }
 
-        [SerializeField]
-        int _minMatch = 3;
-        public virtual int minMatch
-        {
-            get { return _minMatch; }
-            set { _minMatch = value; }
-        }
+        #endregion
 
-        public virtual Func<BaseGem, bool> validateGem
-        {
-            get
-            {
-                return gem => gem.type == type;
-            }
-        }
-
-        public virtual MatchInfo GetMatch()
-        {
-            return BoardController.Instance.GetCrossMatch(this, validateGem);
-        }
-
-        void Awake()
+        #region MONOBEHAVIOUR_METHODS
+        
+        private void Awake()
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
-            animator = GetComponent<Animator>();
+        }
+
+        #endregion
+
+        #region PUBLIC_METHODS
+
+        public MatchInfo GetMatch()
+        {
+            return BoardController.Instance.GetCrossMatch(this, ValidateGem);
         }
 
         public void SetType(GemData gemData)
         {
-            type = gemData.type;
+            this.gemData.type = gemData.type;
             spriteRenderer.sprite = gemData.sprite;
-            minMatch = gemData.minMatch;
+            this.gemData.minMatch = gemData.minMatch;
         }
 
         public void SetPosition(Vector2Int position)
         {
-            this.position = position;
+            gemData.position = position;
             BoardController.Instance.GemBoard[position.x, position.y] = this;
         }
 
         public float MoveTo(Vector3 target, float speed, float delay = 0)
         {
             if (moveToCoroutine != null)
-                StopCoroutine(moveToCoroutine);
-
-            moveToCoroutine = StartCoroutine(IEMoveTo(target, speed, delay));
-
-            return ((target - transform.position).magnitude / speed) + delay;
-        }
-
-        IEnumerator IEMoveTo(Vector3 target, float speed, float delay)
-        {
-            yield return new WaitForSeconds(delay);
-            float distance = (target - transform.position).magnitude;
-
-            while (!Mathf.Approximately(0.0f, distance))
             {
-                transform.position = Vector3.MoveTowards(
-                    transform.position, target, speed * Time.deltaTime
-                );
-                yield return null;
-                distance = (target - transform.position).magnitude;
+                StopCoroutine(moveToCoroutine);
             }
 
-            transform.position = target;
-
-        }
-
-        public float Creating(float delay = 0)
-        {
-            if (animationCoroutine != null)
-                StopCoroutine(animationCoroutine);
-
-            animator.SetTrigger("creating");
-            animationCoroutine = StartCoroutine(IEAnimationDelay(delay));
-
-            return animator.GetCurrentStateDuration() + delay;
-        }
-
-        public float Matched(float delay = 0)
-        {
-            if (animationCoroutine != null)
-                StopCoroutine(animationCoroutine);
-
-            animator.SetTrigger("matched");
-            animationCoroutine = StartCoroutine(IEAnimationDelay(delay));
-
-            return animator.GetCurrentStateDuration() + delay;
-        }
-
-        public void Crush(bool start = true)
-        {
-            animator.SetBool("crushing", start);
-        }
-
-        IEnumerator IEAnimationDelay(float delay)
-        {
-            animator.enabled = false;
-
-            yield return new WaitForSeconds(delay);
-
-            animator.enabled = true;
-        }
-
-        public void TouchDown()
-        {
-
+            moveToCoroutine = StartCoroutine(MoveTo_Coroutine(target, speed, delay));
+            return ((target - transform.position).magnitude / speed) + delay;
         }
 
         public void TouchDrag()
         {
-            if (Vector2.Distance(
-                transform.position, TouchController.Instance.TouchPosition
-            ) > 0.75f)
+            if (Vector2.Distance(transform.position, TouchController.Instance.TouchPosition) > .75f)
             {
-
                 Vector2 delta = TouchController.Instance.TouchPosition - transform.position;
-
                 BaseGem otherGem;
 
                 if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y))
                 {
-
-                    int swapX = (int)(position.x + Mathf.Sign(delta.x));
-                    otherGem = BoardController.Instance.GetGem(swapX, position.y);
+                    int swapX = (int)(gemData.position.x + Mathf.Sign(delta.x));
+                    otherGem = BoardController.Instance.GetGem(swapX, gemData.position.y);
                 }
                 else
                 {
-
-                    int swapY = (int)(position.y + Mathf.Sign(delta.y));
-                    otherGem = BoardController.Instance.GetGem(position.x, swapY);
+                    int swapY = (int)(gemData.position.y + Mathf.Sign(delta.y));
+                    otherGem = BoardController.Instance.GetGem(gemData.position.x, swapY);
                 }
 
                 if (otherGem)
@@ -169,7 +88,6 @@ namespace Match3.Commons
 
                 TouchUp();
             }
-
         }
 
         public void TouchUp()
@@ -177,9 +95,25 @@ namespace Match3.Commons
             TouchController.Instance.ClearElementClicked();
         }
 
-        public void DestroyGem()
+        #endregion
+
+        #region COROUTINES
+
+        private IEnumerator MoveTo_Coroutine(Vector3 target, float speed, float delay)
         {
-            Destroy(gameObject, Matched());
+            yield return new WaitForSeconds(delay);
+            float distance = (target - transform.position).magnitude;
+
+            while (!Mathf.Approximately(0.0f, distance))
+            {
+                transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
+                yield return null;
+                distance = (target - transform.position).magnitude;
+            }
+
+            transform.position = target;
         }
+
+        #endregion
     }
 }

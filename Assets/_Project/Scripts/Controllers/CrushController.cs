@@ -32,7 +32,7 @@ namespace Match3.Controllers
 
                     // Swap Right
                     BaseGem otherGem = BoardController.Instance.GetGem(indexX + 1, indexY);
-                    if (otherGem && otherGem.type != gem.type)
+                    if (otherGem && otherGem.gemData.type != gem.gemData.type)
                     {
                         CrushInfo crushInfo = GetCrush(gem, otherGem);
 
@@ -44,7 +44,7 @@ namespace Match3.Controllers
 
                     // Swap Up
                     otherGem = BoardController.Instance.GetGem(indexX, indexY + 1);
-                    if (otherGem && otherGem.type != gem.type)
+                    if (otherGem && otherGem.gemData.type != gem.gemData.type)
                     {
                         CrushInfo crushInfo = GetCrush(gem, otherGem);
 

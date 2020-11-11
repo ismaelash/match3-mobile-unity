@@ -59,7 +59,7 @@ namespace Match3.Commons
             get
             {
                 if (type == MatchType.Cross)
-                    return _matches.Find(gem => gem.position == _pivot);
+                    return _matches.Find(gem => gem.gemData.position == _pivot);
                 else
                     return _matches[0];
             }
@@ -69,7 +69,7 @@ namespace Match3.Commons
         {
             if (matches != null)
             {
-                _pivot = matches[0].position;
+                _pivot = matches[0].gemData.position;
                 AddMatches(matches);
             }
         }
@@ -88,34 +88,34 @@ namespace Match3.Commons
         void ValidateMatch()
         {
             type = MatchType.Invalid;
-            minPosition = maxPosition = pivot.position;
+            minPosition = maxPosition = pivot.gemData.position;
 
             foreach (BaseGem match in _matches)
             {
                 int x = minPosition.x;
                 int y = minPosition.y;
 
-                if (match.position.x < minPosition.x)
-                    x = match.position.x;
-                if (match.position.y < minPosition.y)
-                    y = match.position.y;
+                if (match.gemData.position.x < minPosition.x)
+                    x = match.gemData.position.x;
+                if (match.gemData.position.y < minPosition.y)
+                    y = match.gemData.position.y;
 
                 minPosition = new Vector2Int(x, y);
 
                 x = maxPosition.x;
                 y = maxPosition.y;
 
-                if (match.position.x > maxPosition.x)
-                    x = match.position.x;
-                if (match.position.y > maxPosition.y)
-                    y = match.position.y;
+                if (match.gemData.position.x > maxPosition.x)
+                    x = match.gemData.position.x;
+                if (match.gemData.position.y > maxPosition.y)
+                    y = match.gemData.position.y;
 
                 maxPosition = new Vector2Int(x, y);
 
-                if (horizontalLenght >= pivot.minMatch)
+                if (horizontalLenght >= pivot.gemData.minMatch)
                     type |= MatchType.Horizontal;
 
-                if (verticalLenght >= pivot.minMatch)
+                if (verticalLenght >= pivot.gemData.minMatch)
                     type |= MatchType.Vertical;
             }
         }
@@ -132,7 +132,7 @@ namespace Match3.Commons
         public static MatchInfo JoinCrossedMatches(MatchInfo a, MatchInfo b)
         {
 
-            if (!(a.isValid && b.isValid) || a.pivot.type != b.pivot.type)
+            if (!(a.isValid && b.isValid) || a.pivot.gemData.type != b.pivot.gemData.type)
             {
                 return new MatchInfo();
             }
@@ -141,7 +141,7 @@ namespace Match3.Commons
             {
                 if (b._matches.Contains(match))
                 {
-                    a._pivot = match.position;
+                    a._pivot = match.gemData.position;
                     b._matches.Remove(match);
                     a.AddMatches(b._matches);
 
@@ -158,14 +158,14 @@ namespace Match3.Commons
 
             _matches.ForEach(match =>
             {
-                int id = fallPositions.FindIndex(f => f.x == match.position.x);
-                if (id > -1 && match.position.y < fallPositions[id].y)
+                int id = fallPositions.FindIndex(f => f.x == match.gemData.position.x);
+                if (id > -1 && match.gemData.position.y < fallPositions[id].y)
                 {
-                    fallPositions[id] = match.position;
+                    fallPositions[id] = match.gemData.position;
                 }
                 else
                 {
-                    fallPositions.Add(match.position);
+                    fallPositions.Add(match.gemData.position);
                 }
             });
 

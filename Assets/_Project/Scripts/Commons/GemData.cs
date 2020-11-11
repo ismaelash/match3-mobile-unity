@@ -10,5 +10,6 @@ namespace Match3.Commons
         public GemType type;
         public Sprite sprite;
         public int minMatch = 3;
+        public Vector2Int position;
     }
 }

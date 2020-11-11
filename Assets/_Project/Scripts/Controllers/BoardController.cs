@@ -68,7 +68,7 @@ namespace Match3.Controllers
                         }
                     }
 
-                    float duration = gem.MoveTo(GetWorldPosition(gem.position), GameController.Instance.FallSpeed, delayLine);
+                    float duration = gem.MoveTo(GetWorldPosition(gem.gemData.position), GameController.Instance.FallSpeed, delayLine);
 
                     if (duration > maxDuration)
                     {
@@ -93,8 +93,8 @@ namespace Match3.Controllers
 
         public void SwapGems(BaseGem from, BaseGem to)
         {
-            Vector2Int fromPosition = from.position;
-            from.SetPosition(to.position);
+            Vector2Int fromPosition = from.gemData.position;
+            from.SetPosition(to.gemData.position);
             to.SetPosition(fromPosition);
         }
 
@@ -120,20 +120,20 @@ namespace Match3.Controllers
                 gem
             };
 
-            BaseGem gemToCheck = GetGem(gem.position.x - 1, gem.position.y);
+            BaseGem gemToCheck = GetGem(gem.gemData.position.x - 1, gem.gemData.position.y);
 
             while (gemToCheck && validateGem(gemToCheck))
             {
                 matches.Add(gemToCheck);
-                gemToCheck = GetGem(gemToCheck.position.x - 1, gemToCheck.position.y);
+                gemToCheck = GetGem(gemToCheck.gemData.position.x - 1, gemToCheck.gemData.position.y);
             }
 
-            gemToCheck = GetGem(gem.position.x + 1, gem.position.y);
+            gemToCheck = GetGem(gem.gemData.position.x + 1, gem.gemData.position.y);
 
             while (gemToCheck && validateGem(gemToCheck))
             {
                 matches.Add(gemToCheck);
-                gemToCheck = GetGem(gemToCheck.position.x + 1, gemToCheck.position.y);
+                gemToCheck = GetGem(gemToCheck.gemData.position.x + 1, gemToCheck.gemData.position.y);
             }
 
             return new MatchInfo(matches);
@@ -146,20 +146,20 @@ namespace Match3.Controllers
                 gem
             };
 
-            BaseGem gemToCheck = GetGem(gem.position.x, gem.position.y - 1);
+            BaseGem gemToCheck = GetGem(gem.gemData.position.x, gem.gemData.position.y - 1);
 
             while (gemToCheck && validateGem(gemToCheck))
             {
                 matches.Add(gemToCheck);
-                gemToCheck = GetGem(gemToCheck.position.x, gemToCheck.position.y - 1);
+                gemToCheck = GetGem(gemToCheck.gemData.position.x, gemToCheck.gemData.position.y - 1);
             }
 
-            gemToCheck = GetGem(gem.position.x, gem.position.y + 1);
+            gemToCheck = GetGem(gem.gemData.position.x, gem.gemData.position.y + 1);
 
             while (gemToCheck && validateGem(gemToCheck))
             {
                 matches.Add(gemToCheck);
-                gemToCheck = GetGem(gemToCheck.position.x, gemToCheck.position.y + 1);
+                gemToCheck = GetGem(gemToCheck.gemData.position.x, gemToCheck.gemData.position.y + 1);
             }
 
             return new MatchInfo(matches);
@@ -229,25 +229,12 @@ namespace Match3.Controllers
             }
             else if (moveToPivot && matches.Count > 0)
             {
-                pivotPosition = GetWorldPosition(matches[0].position);
+                pivotPosition = GetWorldPosition(matches[0].gemData.position);
             }
-
 
             foreach (BaseGem gem in matches)
             {
-                GemBoard[gem.position.x, gem.position.y] = null;
-                float duration = gem.Matched();
-
-                if (moveToPivot)
-                {
-                    duration = Mathf.Max(duration, gem.MoveTo(pivotPosition, GameController.Instance.FallSpeed));
-                }
-
-                if (duration > maxDuration)
-                {
-                    maxDuration = duration;
-                }
-
+                GemBoard[gem.gemData.position.x, gem.gemData.position.y] = null;
                 Destroy(gem.gameObject, maxDuration);
             }
 
@@ -270,26 +257,18 @@ namespace Match3.Controllers
             TouchController.Instance.IsDisabled = enable;
         }
 
-        private BaseGem CreateGem(int x, int y, GemData type, Vector3 worldPosition, float delay, out float creatingDuration)
+        private BaseGem CreateGem(int x, int y, GemData type, Vector3 worldPosition, float delay/*, out float creatingDuration*/)
         {
             BaseGem gem = Instantiate(gemPrefab, worldPosition, Quaternion.identity, transform).GetComponent<BaseGem>();
             gem.SetPosition(new Vector2Int(x, y));
             gem.SetType(type);
-            creatingDuration = gem.Creating(delay);
-
             return gem;
         }
 
-        private BaseGem CreateRandomGem(int x, int y, Vector3 worldPosition, float delay, out float creatingDuration)
+        private BaseGem CreateRandomGem(int x, int y, Vector3 worldPosition, float delay/*, out float creatingDuration*/)
         {
-            return CreateGem(x, y, GameController.Instance.GameData.RandomGem(), worldPosition, delay, out creatingDuration);
+            return CreateGem(x, y, GameController.Instance.GameData.RandomGem(), worldPosition, delay/*, out creatingDuration*/);
         }
-
-        private BaseGem CreateRandomGem(int x, int y, Vector3 worldPosition,float delay)
-        {
-            return CreateRandomGem(x, y, worldPosition, delay, out float _);
-        }
-
         #endregion
 
         #region COROUTINES
@@ -305,8 +284,8 @@ namespace Match3.Controllers
                 for (int indexX = 0; indexX < Width; ++indexX)
                 {
                     GemBoard[indexX, indexY].SetPosition(new Vector2Int(indexX, indexY));
-                    Vector3 target = GetWorldPosition(GemBoard[indexX, indexY].position);
-                    float speed = GameController.Instance.FallSpeed * (GemBoard[indexX, indexY].transform.position - GetWorldPosition(GemBoard[indexX, indexY].position)).magnitude / 4;
+                    Vector3 target = GetWorldPosition(GemBoard[indexX, indexY].gemData.position);
+                    float speed = GameController.Instance.FallSpeed * (GemBoard[indexX, indexY].transform.position - GetWorldPosition(GemBoard[indexX, indexY].gemData.position)).magnitude / 4;
                     float duration = GemBoard[indexX, indexY].MoveTo(target, speed);
 
                     if (duration > maxDuration)
@@ -321,8 +300,8 @@ namespace Match3.Controllers
 
         private IEnumerator SwapGems_Coroutine(BaseGem from, BaseGem to)
         {
-            float durationFrom = from.MoveTo(GetWorldPosition(to.position), GameController.Instance.SwapSpeed);
-            float durationTo = to.MoveTo(GetWorldPosition(from.position), GameController.Instance.SwapSpeed);
+            float durationFrom = from.MoveTo(GetWorldPosition(to.gemData.position), GameController.Instance.SwapSpeed);
+            float durationTo = to.MoveTo(GetWorldPosition(from.gemData.position), GameController.Instance.SwapSpeed);
             yield return new WaitForSeconds(Mathf.Max(durationFrom, durationTo));
             SwapGems(from, to);
         }
@@ -411,7 +390,7 @@ namespace Match3.Controllers
                 {
                     matchInfo.matches.ForEach(gem => gems.Remove(gem));
 
-                    MatchInfo matchInfoSameType = matchInfos.Find(matchInfoData => matchInfoData.pivot.type == matchInfo.pivot.type);
+                    MatchInfo matchInfoSameType = matchInfos.Find(matchInfoData => matchInfoData.pivot.gemData.type == matchInfo.pivot.gemData.type);
 
                     if (matchInfoSameType != null)
                     {
@@ -479,7 +458,7 @@ namespace Match3.Controllers
                     Vector3 worldPosition = GetWorldPosition(new Vector2Int(fall.x, indexY + 1));
                     BaseGem newGem = CreateRandomGem(fall.x, indexY, worldPosition, delay);
 
-                    float duration = newGem.MoveTo(GetWorldPosition(newGem.position), GameController.Instance.FallSpeed, delay);
+                    float duration = newGem.MoveTo(GetWorldPosition(newGem.gemData.position), GameController.Instance.FallSpeed, delay);
                     delay = duration;
 
                     if (duration > maxDuration)

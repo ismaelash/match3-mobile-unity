@@ -39,7 +39,7 @@ namespace Match3.Controllers
 
 		public void ClearElementClicked()
 		{
-			Instance.elementClicked = null;
+			elementClicked = null;
 		}
 
 		#endregion
@@ -72,11 +72,6 @@ namespace Match3.Controllers
 					if (raycastHit)
 					{
 						elementClicked = raycastHit.collider.GetComponent<ITouchable>();
-					}
-
-					if (elementClicked != null)
-					{
-						elementClicked.TouchDown();
 					}
 				}
 			}
@@ -112,11 +107,6 @@ namespace Match3.Controllers
 				if (raycastHit)
 				{
 					elementClicked = raycastHit.collider.GetComponent<ITouchable>();
-				}
-
-				if (elementClicked != null)
-				{
-					elementClicked.TouchDown();
 				}
 			}
 		}
