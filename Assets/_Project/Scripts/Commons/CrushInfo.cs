@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 
-[Serializable]
-public class CrushInfo
+namespace Match3.Commons
 {
-    public BaseGem gem;
-    public BaseGem currentSwap;
-    public List<BaseGem> swaps = new List<BaseGem>();
-
-    public CrushInfo(BaseGem gem)
+    [Serializable]
+    public class CrushInfo
     {
-        this.gem = gem;
+        public BaseGem gem;
+        public BaseGem currentSwap;
+        public List<BaseGem> swaps = new List<BaseGem>();
+
+        public CrushInfo(BaseGem gem)
+        {
+            this.gem = gem;
+        }
     }
 }

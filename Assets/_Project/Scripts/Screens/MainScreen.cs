@@ -1,8 +1,8 @@
-﻿using IsmaelNascimento.Controllers;
+﻿using Match3.Controllers;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace IsmaelNascimento.Screens
+namespace Match3.Screens
 {
     public class MainScreen : MonoBehaviour
     {

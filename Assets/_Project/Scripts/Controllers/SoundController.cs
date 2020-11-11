@@ -1,7 +1,7 @@
-﻿using UnityEngine;
-using Utils;
+﻿using Match3.Commons;
+using UnityEngine;
 
-namespace IsmaelNascimento.Controllers
+namespace Match3.Controllers
 {
     public class SoundController : Singleton<SoundController>
     {

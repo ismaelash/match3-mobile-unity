@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using Utils;
+﻿using Match3.Commons;
+using System.Collections.Generic;
 
-namespace IsmaelNascimento.Controllers
+namespace Match3.Controllers
 {
     public class CrushController : Singleton<CrushController>
     {

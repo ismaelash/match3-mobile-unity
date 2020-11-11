@@ -1,10 +1,9 @@
-﻿using IsmaelNascimento.Commons;
-using IsmaelNascimento.Screens;
+﻿using Match3.Commons;
+using Match3.Screens;
 using System.Collections;
 using UnityEngine;
-using Utils;
 
-namespace IsmaelNascimento.Controllers
+namespace Match3.Controllers
 {
     public class GameController : Singleton<GameController>
     {
@@ -105,7 +104,6 @@ namespace IsmaelNascimento.Controllers
                 if (ScoreCurrent >= GoalScoreCurrent)
                 {
                     GoalScoreCurrent += GoalScoreCurrent + GoalScoreCurrent / 2;
-                    TimeLeft = timeTotalGameplay;
                 }
 
                 if (TimeLeft <= 0)

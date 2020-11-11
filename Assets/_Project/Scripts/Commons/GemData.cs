@@ -1,11 +1,14 @@
 ﻿using System;
 using UnityEngine;
-using static IsmaelNascimento.Commons.GameData;
+using static Match3.Commons.GameData;
 
-[Serializable]
-public class GemData
+namespace Match3.Commons
 {
-    public GemType type;
-    public Sprite sprite;
-    public int minMatch = 3;
+    [Serializable]
+    public class GemData
+    {
+        public GemType type;
+        public Sprite sprite;
+        public int minMatch = 3;
+    }
 }

@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 
-namespace Utils
+namespace Match3.Commons
 {
     public class Singleton<T> : MonoBehaviour where T : Component
     {
         public static T Instance { get; private set; }
 
-        public virtual void Awake()
+        public void Awake()
         {
             if (Instance == null)
             {

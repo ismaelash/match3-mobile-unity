@@ -1,11 +1,11 @@
-﻿using IsmaelNascimento.Controllers;
+﻿using Match3.Controllers;
 using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace IsmaelNascimento.Screens
+namespace Match3.Screens
 {
     public class GameplayScreen : MonoBehaviour
     {

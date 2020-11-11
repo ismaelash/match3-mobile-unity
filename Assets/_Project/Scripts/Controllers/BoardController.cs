@@ -1,12 +1,10 @@
-﻿using IsmaelNascimento.Commons;
+﻿using Match3.Commons;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Utils;
-using static IsmaelNascimento.Commons.GameData;
 
-namespace IsmaelNascimento.Controllers
+namespace Match3.Controllers
 {
     public class BoardController : Singleton<BoardController>
     {

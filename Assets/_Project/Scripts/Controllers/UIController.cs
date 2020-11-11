@@ -1,8 +1,7 @@
-﻿using Utils;
-using UnityEngine;
-using IsmaelNascimento.Commons;
+﻿using UnityEngine;
+using Match3.Commons;
 
-namespace IsmaelNascimento.Controllers
+namespace Match3.Controllers
 {
     public class UIController : Singleton<UIController>
     {

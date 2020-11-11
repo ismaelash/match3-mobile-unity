@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using Utils;
 
-namespace IsmaelNascimento.Commons
+namespace Match3.Commons
 {
     [CreateAssetMenu(fileName = "GameData", menuName = "Match3/GameData")]
     public class GameData : ScriptableObject

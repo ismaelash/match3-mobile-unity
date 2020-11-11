@@ -1,4 +1,4 @@
-﻿namespace IsmaelNascimento.Commons
+﻿namespace Match3.Commons
 {
     public class Constants
     {

@@ -1,9 +1,9 @@
-﻿using UnityEngine;
-using Utils;
+﻿using Match3.Commons;
+using UnityEngine;
 
-namespace IsmaelNascimento.Controllers
+namespace Match3.Controllers
 {
-	public class TouchController : Singleton<TouchController>
+    public class TouchController : Singleton<TouchController>
 	{
 		#region VARIABLES
 

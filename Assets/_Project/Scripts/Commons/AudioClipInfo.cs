@@ -1,9 +1,12 @@
 ﻿using System;
 using UnityEngine;
 
-[Serializable]
-public class AudioClipInfo
+namespace Match3.Commons
 {
-    public string name;
-    public AudioClip clip;
+    [Serializable]
+    public class AudioClipInfo
+    {
+        public string name;
+        public AudioClip clip;
+    }
 }
