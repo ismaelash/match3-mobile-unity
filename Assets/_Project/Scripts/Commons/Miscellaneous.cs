@@ -11,30 +11,15 @@ namespace Match3.Commons
 		{
 			List<T> list = new List<T>();
 
-			for (int i = 0; i < arr.GetLength(0); ++i)
+			for (int index1 = 0; index1 < arr.GetLength(0); ++index1)
 			{
-				for (int j = 0; j < arr.GetLength(1); ++j)
+				for (int index2 = 0; index2 < arr.GetLength(1); ++index2)
 				{
-					list.Add(arr[i, j]);
+					list.Add(arr[index1, index2]);
 				}
 			}
 
 			return list;
-		}
-
-		public static float GetCurrentStateDuration(this Animator animator, int layerIndex = 0)
-		{
-			animator.Update(0);
-			AnimatorClipInfo[] animatorClipInfos = animator.GetCurrentAnimatorClipInfo(layerIndex);
-			float speedMultiplier = animator.GetCurrentAnimatorStateInfo(0).speed;
-
-			if (animatorClipInfos.Length == 0 || speedMultiplier == 0)
-            {
-				return 0;
-			}
-
-			float duration = animatorClipInfos[0].clip.length;
-			return duration / Mathf.Abs(speedMultiplier);
 		}
 
 		public static T Choose<T>(List<T> chances)

@@ -7,7 +7,7 @@ namespace Match3.Controllers
     {
         #region VARIABLES
 
-        private List<CrushInfo> crushes = new List<CrushInfo>();
+        private readonly List<CrushInfo> crushes = new List<CrushInfo>();
 
         public bool HasCrushes
         {

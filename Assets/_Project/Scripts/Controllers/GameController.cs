@@ -19,26 +19,28 @@ namespace Match3.Controllers
 
         #region VARIABLES
 
+        [Header("Screens")]
+        [SerializeField] private MainScreen mainScreen;
+        [SerializeField] private GameplayScreen gameplayScreen;
+
         [Header("Game Settings")]
         [SerializeField] private GameData gameData;
-        [SerializeField] [Tooltip("Attempts matches moves")] private int attempMatchesLimit = 10;
+        [SerializeField] [Tooltip("Attempts matches moves")] private int attempMatchesLimit = 100;
         [SerializeField] [Tooltip("Seconds")] private int timeTotalGameplay = 120;
         [SerializeField] private float swapSpeed;
         [SerializeField] private float fallSpeed;
         [SerializeField] private bool preventInitialMatches;
-        [SerializeField] private GameplayScreen gameplayScreen;
 
-        // Privates
-        private float cameraWidth = 7;
+
+        private float cameraWidth;
         private Coroutine changeGem;
         private Coroutine gameOver;
         private int currentGoalScore;
         private int score;
         private float timeLeft;
         private int attempMatchesCount;
-        private GameState state = GameState.None;
+        private GameState state;
 
-        // Properties
         public int ScoreCurrent
         {
             get => score;
@@ -93,7 +95,6 @@ namespace Match3.Controllers
         {
             cameraWidth = BoardController.Instance.Width + (Camera.main.aspect * 2);
             Miscellaneous.SetCameraOrthographicSizeByWidth(Camera.main, cameraWidth);
-            UIController.Instance.ShowMainScreen();
         }
 
         private void Update()
@@ -127,18 +128,6 @@ namespace Match3.Controllers
         public void StartGame()
         {
             StartCoroutine(StartGame_Coroutine());
-        }
-
-        public void ShowGemMenu(bool show = true)
-        {
-            if (!show)
-            {
-                if (changeGem != null)
-                {
-                    StopCoroutine(changeGem);
-                    changeGem = null;
-                }
-            }
         }
 
         #endregion
@@ -185,7 +174,7 @@ namespace Match3.Controllers
             TouchController.Instance.IsDisabled = true;
             state = GameState.None;
             yield return new WaitForSeconds(BoardController.Instance.DestroyGems() + .5f);
-            UIController.Instance.ShowMainScreen();
+            mainScreen.Show();
             gameOver = null;
         }
 

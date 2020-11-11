@@ -1,5 +1,8 @@
-﻿public interface ITouchable
+﻿namespace Match3.Interfaces
 {
-    void TouchDrag();
-    void TouchUp();
+    public interface ITouchable
+    {
+        void TouchDrag();
+        void TouchUp();
+    }
 }

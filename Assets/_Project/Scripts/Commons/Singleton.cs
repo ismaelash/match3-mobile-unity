@@ -4,7 +4,13 @@ namespace Match3.Commons
 {
     public class Singleton<T> : MonoBehaviour where T : Component
     {
+        #region VARIABLES
+        
         public static T Instance { get; private set; }
+
+        #endregion
+
+        #region MONOBEHAVIOUR
 
         public void Awake()
         {
@@ -14,8 +20,10 @@ namespace Match3.Commons
             }
             else
             {
-				Destroy(this);
-			}
-		}
-	}
+                Destroy(this);
+            }
+        }
+
+        #endregion
+    }
 }

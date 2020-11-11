@@ -37,7 +37,7 @@ namespace Match3.Commons
 
         public AudioClip GetAudioClip(string name)
         {
-            AudioClipInfo audioClipInfo = audioClipInfos.Find(aci => aci.name == name);
+            AudioClipInfo audioClipInfo = audioClipInfos.Find(audioClipInfoData => audioClipInfoData.name == name);
 
             if (audioClipInfo != null)
             {

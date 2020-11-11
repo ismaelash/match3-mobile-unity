@@ -1,4 +1,5 @@
 ﻿using Match3.Controllers;
+using Match3.Interfaces;
 using System;
 using TMPro;
 using UnityEngine;
@@ -7,11 +8,10 @@ using UnityEngine.UI;
 
 namespace Match3.Screens
 {
-    public class GameplayScreen : MonoBehaviour
+    public class GameplayScreen : MonoBehaviour, IScreen
     {
         #region VARIABLES
 
-        [Header("UI Elements")]
         [SerializeField] private Button menuButton;
         [SerializeField] private TextMeshProUGUI timeLeftText;
         [SerializeField] private TextMeshProUGUI scoreText;
@@ -30,6 +30,7 @@ namespace Match3.Screens
         #endregion
 
         #region PUBLIC_METHODS
+
         public void UpdateTimeLeft(float timeLeft)
         {
             TimeSpan timeSpan = TimeSpan.FromSeconds(timeLeft);

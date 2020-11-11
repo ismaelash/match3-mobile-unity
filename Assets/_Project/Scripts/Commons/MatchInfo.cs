@@ -22,7 +22,7 @@ namespace Match3.Commons
         private Vector2Int minPosition;
         private Vector2Int maxPosition;
         private MatchType type;
-        private List<BaseGem> matches = new List<BaseGem>();
+        private readonly List<BaseGem> matches = new List<BaseGem>();
         private Vector2Int pivot;
 
         public bool IsValid
@@ -87,7 +87,6 @@ namespace Match3.Commons
         // Join Crossed Matches from same type
         public static MatchInfo JoinCrossedMatches(MatchInfo matchInfoA, MatchInfo matchInfoB)
         {
-
             if (!(matchInfoA.IsValid && matchInfoB.IsValid) || matchInfoA.Pivot.gemData.type != matchInfoB.Pivot.gemData.type)
             {
                 return new MatchInfo();

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Match3.Controllers
-{
+{   
     public class BoardController : Singleton<BoardController>
     {
         #region VARIABLES
@@ -13,17 +13,14 @@ namespace Match3.Controllers
         [Header("Config Board")]
         [SerializeField] private BaseGem gemPrefab;
         [SerializeField] private int width = 6;
-        [SerializeField] private int height = 6;
+        [SerializeField] private int height = 8;
 
-        // Publics
-        public bool IsUpdatingBoard { get; set; }
-        public Action OnEndUpdatingBoard;
 
-        // Privates
         private Coroutine updateBoard;
         private int matchCounter;
 
-        // Properties
+        public bool IsUpdatingBoard { get; set; }
+
         public int Width { get => width; set => width = value; }
 
         public int Height { get => height; set => height = value; }
@@ -34,6 +31,8 @@ namespace Match3.Controllers
             get => matchCounter;
             set => matchCounter = Mathf.Min(value, 5);
         }
+
+        public Action OnEndUpdatingBoard;
 
         #endregion
 
@@ -79,6 +78,8 @@ namespace Match3.Controllers
                 delayLine = maxDuration;
             }
 
+            Debug.Log("Board Created");
+
             return maxDuration;
         }
 
@@ -86,7 +87,9 @@ namespace Match3.Controllers
         public BaseGem GetGem(int x, int y)
         {
             if (x < 0 || x >= Width || y < 0 || y >= Height)
+            {
                 return null;
+            }
 
             return GemBoard[x, y];
         }
@@ -167,15 +170,15 @@ namespace Match3.Controllers
 
         public MatchInfo GetCrossMatch(BaseGem gem, Func<BaseGem, bool> validateGem)
         {
-            MatchInfo mathcInfohorizontal = GetHorizontalMatch(gem, validateGem);
+            MatchInfo mathcInfoHorizontal = GetHorizontalMatch(gem, validateGem);
             MatchInfo matchInfoVertical = GetVerticalMatch(gem, validateGem);
             int crossCheck = 0;
 
-            while (!mathcInfohorizontal.IsValid && crossCheck < matchInfoVertical.Matches.Count)
+            while (!mathcInfoHorizontal.IsValid && crossCheck < matchInfoVertical.Matches.Count)
             {
                 if (matchInfoVertical.IsValid)
                 {
-                    mathcInfohorizontal = GetHorizontalMatch(matchInfoVertical.Matches[crossCheck], validateGem);
+                    mathcInfoHorizontal = GetHorizontalMatch(matchInfoVertical.Matches[crossCheck], validateGem);
                 }
                 else
                 {
@@ -186,11 +189,11 @@ namespace Match3.Controllers
             }
 
             crossCheck = 0;
-            while (!matchInfoVertical.IsValid && crossCheck < mathcInfohorizontal.Matches.Count)
+            while (!matchInfoVertical.IsValid && crossCheck < mathcInfoHorizontal.Matches.Count)
             {
-                if (mathcInfohorizontal.IsValid)
+                if (mathcInfoHorizontal.IsValid)
                 {
-                    matchInfoVertical = GetVerticalMatch(mathcInfohorizontal.Matches[crossCheck], validateGem);
+                    matchInfoVertical = GetVerticalMatch(mathcInfoHorizontal.Matches[crossCheck], validateGem);
                 }
                 else
                 {
@@ -200,13 +203,12 @@ namespace Match3.Controllers
                 crossCheck++;
             }
 
-            MatchInfo mathcInfo = MatchInfo.JoinCrossedMatches(mathcInfohorizontal, matchInfoVertical);
-
+            MatchInfo mathcInfo = MatchInfo.JoinCrossedMatches(mathcInfoHorizontal, matchInfoVertical);
             if (!mathcInfo.IsValid)
             {
-                if (mathcInfohorizontal.IsValid)
+                if (mathcInfoHorizontal.IsValid)
                 {
-                    return mathcInfohorizontal;
+                    return mathcInfoHorizontal;
                 }
                 else
                 {
@@ -217,19 +219,13 @@ namespace Match3.Controllers
             return mathcInfo;
         }
 
-        public float DestroyGems(List<BaseGem> matches = null, bool moveToPivot = false)
+        public float DestroyGems(List<BaseGem> matches = null)
         {
-            Vector3 pivotPosition = Vector3.zero;
             float maxDuration = 0;
 
             if (matches == null)
             {
                 matches = GemBoard.GetList();
-                moveToPivot = false;
-            }
-            else if (moveToPivot && matches.Count > 0)
-            {
-                pivotPosition = GetWorldPosition(matches[0].gemData.position);
             }
 
             foreach (BaseGem gem in matches)
@@ -262,6 +258,7 @@ namespace Match3.Controllers
             BaseGem gem = Instantiate(gemPrefab, worldPosition, Quaternion.identity, transform).GetComponent<BaseGem>();
             gem.SetPosition(new Vector2Int(x, y));
             gem.SetType(type);
+
             return gem;
         }
 
@@ -269,6 +266,7 @@ namespace Match3.Controllers
         {
             return CreateGem(x, y, GameController.Instance.GameData.RandomGem(), worldPosition, delay/*, out creatingDuration*/);
         }
+
         #endregion
 
         #region COROUTINES
@@ -276,6 +274,7 @@ namespace Match3.Controllers
         private IEnumerator ShuffleBoard_Coroutine()
         {
             yield return new WaitForSeconds(.25f);
+
             GemBoard = Miscellaneous.ShuffleMatrix(GemBoard);
             float maxDuration = 0;
 
@@ -478,7 +477,7 @@ namespace Match3.Controllers
 
             foreach (MatchInfo matchInfo in matches)
             {
-                float duration = DestroyGems(matchInfo.Matches, matchInfo.Pivot);
+                float duration = DestroyGems(matchInfo.Matches);
 
                 if (duration > maxDuration)
                 {

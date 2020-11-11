@@ -121,51 +121,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &119792991
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 119792992}
-  - component: {fileID: 119792993}
-  m_Layer: 0
-  m_Name: UIController
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &119792992
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 119792991}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1733397414}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &119792993
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 119792991}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cee22005971910f40b00440158e8a906, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mainScreen: {fileID: 1017341596}
-  gameScreen: {fileID: 861541869}
 --- !u!1 &125178341
 GameObject:
   m_ObjectHideFlags: 0
@@ -1077,6 +1032,49 @@ MonoBehaviour:
   scoreText: {fileID: 1898341363}
   movesCountText: {fileID: 1255953180}
   mainScreen: {fileID: 1017341598}
+--- !u!1 &942742114
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 942742115}
+  - component: {fileID: 942742116}
+  m_Layer: 0
+  m_Name: EventController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &942742115
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 942742114}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1733397414}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &942742116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 942742114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 154849c05c62e794e8eeec5500aecd09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1017341596
 GameObject:
   m_ObjectHideFlags: 0
@@ -1129,6 +1127,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b131ce9233494f348a430228f2b8d33c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameplayScreen: {fileID: 861541873}
   playButton: {fileID: 584610026}
 --- !u!114 &1017341599
 MonoBehaviour:
@@ -1811,13 +1810,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25a613a1c35d4354bb7f368b676d0725, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainScreen: {fileID: 1017341598}
+  gameplayScreen: {fileID: 861541873}
   gameData: {fileID: 11400000, guid: dffda7e03a8d7bc48bde3ca9e3e6174e, type: 2}
   attempMatchesLimit: 100
-  timeTotalGameplay: 60
+  timeTotalGameplay: 120
   swapSpeed: 7
-  fallSpeed: 10
+  fallSpeed: 50
   preventInitialMatches: 1
-  gameplayScreen: {fileID: 861541873}
 --- !u!1 &1511222104
 GameObject:
   m_ObjectHideFlags: 0
@@ -1976,7 +1976,7 @@ Transform:
   - {fileID: 606590753}
   - {fileID: 1511222105}
   m_Father: {fileID: 1733397414}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1613858001
 MonoBehaviour:
@@ -2023,8 +2023,8 @@ Transform:
   - {fileID: 1245901920}
   - {fileID: 2041001119}
   - {fileID: 411435297}
-  - {fileID: 119792992}
   - {fileID: 1613858000}
+  - {fileID: 942742115}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

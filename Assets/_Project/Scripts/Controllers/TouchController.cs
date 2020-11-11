@@ -1,4 +1,5 @@
 ﻿using Match3.Commons;
+using Match3.Interfaces;
 using UnityEngine;
 
 namespace Match3.Controllers
@@ -7,11 +8,9 @@ namespace Match3.Controllers
 	{
 		#region VARIABLES
 
-		// Privates
 		private ITouchable elementClicked;
 		private Vector3 lastPosition;
 
-		// Properties
 		public Vector3 TouchPosition { get; set; }
 		public bool IsDisabled { get; set; }
 
