@@ -11,7 +11,7 @@ namespace Match3.Commons
     {
         #region VARIABLES
 
-        public GemData gemData = new GemData();
+        [HideInInspector] public GemData gemData = new GemData();
 
         private Coroutine moveToCoroutine = null;
         private SpriteRenderer spriteRenderer;

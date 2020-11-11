@@ -12,7 +12,8 @@ namespace Match3.Controllers
         public Action<int> OnNewScoreAction;
         public Action<int> OnNewGoalScore;
         public Action<int> OnAttempMatch;
-        public Action<int> OnAttempMatchLimit;
+        public Action OnAttempMatchLimit;
+        public Action<GemData> OnGemMatch;
 
         #endregion
     }

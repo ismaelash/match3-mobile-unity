@@ -1,4 +1,5 @@
-﻿using Match3.Controllers;
+﻿using Match3.Commons;
+using Match3.Controllers;
 using Match3.Interfaces;
 using System;
 using TMPro;
@@ -12,6 +13,7 @@ namespace Match3.Screens
     {
         #region VARIABLES
 
+        [SerializeField] private GameObject containerElementsUI;
         [SerializeField] private Button menuButton;
         [SerializeField] private TextMeshProUGUI timeLeftText;
         [SerializeField] private TextMeshProUGUI scoreText;
@@ -25,6 +27,11 @@ namespace Match3.Screens
         private void Start()
         {
             menuButton.onClick.AddListener(OnButtonMenuClicked);
+            EventController.Instance.OnStartGameAction += OnStartGame_Action;
+            EventController.Instance.OnNewScoreAction += OnUpdateScores_Action;
+            EventController.Instance.OnNewGoalScore += OnUpdateScores_Action;
+            EventController.Instance.OnAttempMatch += OnAttempMatch_Action;
+            EventController.Instance.OnGemMatch += OnGemMatch_Action;
         }
 
         #endregion
@@ -39,31 +46,39 @@ namespace Match3.Screens
             timeLeftText.text = $"{ minutes }:{ seconds }";
         }
 
-        public void UpdateScore()
-        {
-            scoreText.text = $"{ GameController.Instance.ScoreCurrent } / {GameController.Instance.GoalScoreCurrent}";
-        }
-
-        public void UpdateMovesCount()
-        {
-            movesCountText.text = $"{ GameController.Instance.AttempMatchesCount } / {GameController.Instance.AttempMatchesLimit}";
-        }
-
         public void Show()
         {
-            UpdateTimeLeft(GameController.Instance.TimeLeft);
-            UpdateMovesCount();
-            UpdateScore();
-
             mainScreen.gameObject.SetActive(false);
             gameObject.SetActive(true);
             SoundController.Instance.StopMusic();
-
         }
 
         #endregion
 
         #region PRIVATE_METHODS
+
+        private void OnStartGame_Action()
+        {
+            UpdateTimeLeft(GameController.Instance.TimeLeft);
+            OnUpdateScores_Action(0);
+            OnAttempMatch_Action(0);
+            containerElementsUI.SetActive(true);
+        }
+
+        private void OnUpdateScores_Action(int score)
+        {
+            scoreText.text = $"{ GameController.Instance.ScoreCurrent } / {GameController.Instance.GoalScoreCurrent}";
+        }
+
+        private void OnAttempMatch_Action(int attemptCount)
+        {
+            movesCountText.text = $"{ GameController.Instance.AttempMatchesCount } / {GameController.Instance.AttempMatchesLimit}";
+        }
+
+        private void OnGemMatch_Action(GemData gemData)
+        {
+            Debug.Log($"{gemData.type} matched!");
+        }
 
         private void OnButtonMenuClicked()
         {

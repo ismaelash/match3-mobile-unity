@@ -470,6 +470,7 @@ namespace Match3.Controllers
 
         private IEnumerator DestroyMatchedGems(List<MatchInfo> matches)
         {
+            EventController.Instance.OnGemMatch?.Invoke(matches[0].Matches[0].gemData);
             float maxDuration = 0;
             int score = 0;
 

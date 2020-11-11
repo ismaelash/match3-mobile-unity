@@ -47,7 +47,6 @@ namespace Match3.Controllers
             {
                 score = value;
                 EventController.Instance.OnNewScoreAction?.Invoke(value);
-                gameplayScreen.UpdateScore();
             }
         }
 
@@ -58,7 +57,6 @@ namespace Match3.Controllers
             {
                 currentGoalScore = value;
                 EventController.Instance.OnNewGoalScore?.Invoke(value);
-                gameplayScreen.UpdateScore();
             }
         }
 
@@ -79,11 +77,10 @@ namespace Match3.Controllers
             {
                 attempMatchesCount = value;
                 EventController.Instance.OnAttempMatch?.Invoke(value);
-                gameplayScreen.UpdateMovesCount();
 
                 if(attempMatchesCount == attempMatchesLimit)
                 {
-                    EventController.Instance.OnAttempMatchLimit?.Invoke(value);
+                    EventController.Instance.OnAttempMatchLimit?.Invoke();
                 }
             }
         }
@@ -102,6 +99,8 @@ namespace Match3.Controllers
         {
             cameraWidth = BoardController.Instance.Width + (Camera.main.aspect * 2);
             Miscellaneous.SetCameraOrthographicSizeByWidth(Camera.main, cameraWidth);
+            EventController.Instance.OnEndGameplayAction += GameOver;
+            EventController.Instance.OnAttempMatchLimit += GameOver;
         }
 
         private void Update()
@@ -117,7 +116,6 @@ namespace Match3.Controllers
                 if (TimeLeft <= 0)
                 {
                     EventController.Instance.OnEndGameplayAction?.Invoke();
-                    GameOver();
                 }
             }
 
@@ -172,14 +170,8 @@ namespace Match3.Controllers
 
         private IEnumerator GameOver_Coroutine()
         {
+            yield return new WaitForSeconds(.5f);
             yield return new WaitUntil(() => !BoardController.Instance.IsUpdatingBoard);
-
-            if (TimeLeft > 0)
-            {
-                gameOver = null;
-                yield break;
-            }
-
             TouchController.Instance.IsDisabled = true;
             state = GameState.None;
             yield return new WaitForSeconds(BoardController.Instance.DestroyGems() + .5f);
