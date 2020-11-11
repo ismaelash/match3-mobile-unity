@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Utils;
+using static IsmaelNascimento.Commons.GameData;
 
 namespace IsmaelNascimento.Controllers
 {
@@ -33,7 +34,7 @@ namespace IsmaelNascimento.Controllers
         public int MatchCounter
         {
             get => matchCounter;
-            set => matchCounter = Mathf.Min(value, GameController.Instance.GameData.maxCombo);
+            set => matchCounter = Mathf.Min(value, 5);
         }
 
         #endregion
@@ -351,22 +352,6 @@ namespace IsmaelNascimento.Controllers
                     matchTo
                 };
 
-                if (from.type == GemType.Special)
-                {
-                    foreach (MatchInfo specialMatch in matchFrom.specialMatches)
-                    {
-                        matches.Add(specialMatch);
-                    }
-                }
-
-                if (to.type == GemType.Special)
-                {
-                    foreach (MatchInfo specialMatch in matchTo.specialMatches)
-                    {
-                        matches.Add(specialMatch);
-                    }
-                }
-
                 foreach (var matchInfo in new List<MatchInfo>(matches))
                 {
                     if (matchInfo.isValid)
@@ -422,11 +407,6 @@ namespace IsmaelNascimento.Controllers
             {
                 BaseGem current = gems[0];
                 gems.Remove(current);
-
-                if (current.type == GemType.Special)
-                {
-                    continue;
-                }
 
                 MatchInfo matchInfo = current.GetMatch();
                 if (matchInfo.isValid)
@@ -521,23 +501,7 @@ namespace IsmaelNascimento.Controllers
 
             foreach (MatchInfo matchInfo in matches)
             {
-
                 float duration = DestroyGems(matchInfo.matches, matchInfo.pivot);
-
-                if (matchInfo.type == MatchType.Cross && !(matchInfo.pivot is BlenderGem))
-                {
-                    float newGemDuration;
-                    BaseGem newGem = CreateGem(
-                        matchInfo.pivot.position.x,
-                        matchInfo.pivot.position.y,
-                        GameController.Instance.GameData.GemOfType(GemType.Special),
-                        GetWorldPosition(matchInfo.pivot.position + Vector2Int.up),
-                        0, out newGemDuration
-                    );
-
-                    newGem.MoveTo(GetWorldPosition(newGem.position),GameController.Instance.FallSpeed);
-                    duration += newGemDuration;
-                }
 
                 if (duration > maxDuration)
                 {
@@ -545,11 +509,6 @@ namespace IsmaelNascimento.Controllers
                 }
 
                 MatchCounter++;
-                if (matchInfo.pivot is BlenderGem)
-                {
-                    MatchCounter = 5;
-                }
-
                 score += matchInfo.GetScore();
             }
 

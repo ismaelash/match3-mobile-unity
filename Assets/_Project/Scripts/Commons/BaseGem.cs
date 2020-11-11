@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Utils;
+using static IsmaelNascimento.Commons.GameData;
 
 [RequireComponent(typeof(SpriteRenderer))]
 public class BaseGem : MonoBehaviour, ITouchable

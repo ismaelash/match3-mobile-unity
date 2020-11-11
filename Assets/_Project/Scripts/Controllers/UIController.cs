@@ -1,7 +1,5 @@
 ﻿using Utils;
-using TMPro;
 using UnityEngine;
-using System;
 using IsmaelNascimento.Commons;
 
 namespace IsmaelNascimento.Controllers
